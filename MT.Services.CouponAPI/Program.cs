@@ -1,14 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using MT.Services.CouponAPI;
 using MT.Services.CouponAPI.DBContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//builder.Services.AddDbContext<CouponDbContext>(options =>
-//{
-//    options.UseSqlServer
-//});
+builder.Services.AddDbContext<CouponDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+var mapper = MapperConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,4 +35,14 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+ApplyMigrations();
 app.Run();
+
+
+void ApplyMigrations()
+{
+    using var scope = app.Services.CreateScope();
+    var _db = scope.ServiceProvider.GetRequiredService<CouponDbContext>();
+    if (_db.Database.GetPendingMigrations().Count() > 0)
+        _db.Database.Migrate();
+}

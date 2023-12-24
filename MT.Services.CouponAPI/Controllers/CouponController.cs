@@ -6,7 +6,7 @@ using MT.Services.CouponAPI.Models.DTO;
 
 namespace MT.Services.CouponAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/Coupon")]
 [ApiController]
 public class CouponController : ControllerBase
 {
@@ -111,6 +111,7 @@ public class CouponController : ControllerBase
     }
 
     [HttpDelete]
+    [Route("{id:int}")]
     public ResponseDto Delete(int id)
     {
         try

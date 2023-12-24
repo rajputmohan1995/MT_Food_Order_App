@@ -1,0 +1,8 @@
+﻿@{
+    var pageTitle = "Home";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />

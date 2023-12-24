@@ -1,0 +1,60 @@
+﻿@model CouponDTO
+@{
+    var pageTitle = "Create Coupon";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Coupon", PageName = "Coupons" });
+    pageHeader.PageLinks.Add(new() { Action = "Create", Controller = "Coupon", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+<!-- Content Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="p-5 bg-light rounded">
+            <div class="row g-4">
+
+                <div class="col-lg-3"></div>
+
+                <div class="col-lg-6">
+                    <form asp-action="Create" asp-controller="Coupon">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label class="mb-2">Coupon Code <span class="text-danger">*</span></label>
+
+                            <input type="text" asp-for="CouponCode" class="w-100 form-control border-0 py-3" required
+                                   placeholder="Enter Coupon Code" />
+                            <span asp-validation-for="CouponCode" class="w-100 text-danger my-2"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label class="mb-2">Discount Amount <span class="text-danger">*</span></label>
+
+                            <input type="number" asp-for="DiscountAmount" class="w-100 form-control border-0 py-3" required
+                                   placeholder="Enter Discount Amount" />
+                            <span asp-validation-for="DiscountAmount" class="w-100 text-danger my-2"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label class="mb-2">Minimum Amount <span class="text-danger">*</span></label>
+
+                            <input type="number" asp-for="MinimumAmount" class="w-100 form-control border-0 py-3" required
+                                   placeholder="Enter Minimum Order Amount" />
+                            <span asp-validation-for="MinimumAmount" class="w-100 text-danger my-2"></span>
+                        </div>
+
+                        <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary" type="submit">Submit</button>
+                    </form>
+                </div>
+
+                <div class="col-lg-3"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

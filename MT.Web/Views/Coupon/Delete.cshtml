@@ -1,0 +1,54 @@
+﻿@model CouponDTO
+@{
+    var pageTitle = "Delete Coupon";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Coupon", PageName = "Coupons" });
+    pageHeader.PageLinks.Add(new() { Action = "Delete", Controller = "Coupon", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+<!-- Content Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="p-5 bg-light rounded">
+            <div class="row g-4">
+
+                <div class="col-lg-3"></div>
+
+                <div class="col-lg-6">
+                    <form asp-action="Delete" asp-controller="Coupon">
+                        <input type="hidden" asp-for="CouponId" />
+
+                        <div class="mb-4">
+                            <label class="mb-2">Coupon Code</label>
+                            <input type="text" asp-for="CouponCode" class="w-100 form-control border-0 py-3" disabled
+                                   placeholder="Enter Coupon Code" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="mb-2">Discount Amount</label>
+                            <input type="number" asp-for="DiscountAmount" class="w-100 form-control border-0 py-3" disabled
+                                   placeholder="Enter Discount Amount" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="mb-2">Minimum Amount</label>
+                            <input type="number" asp-for="MinimumAmount" class="w-100 form-control border-0 py-3" disabled
+                                   placeholder="Enter Minimum Order Amount" />
+                        </div>
+
+                        <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary" type="submit">Delete</button>
+                    </form>
+                </div>
+
+                <div class="col-lg-3"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

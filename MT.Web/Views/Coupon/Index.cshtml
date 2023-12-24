@@ -1,0 +1,84 @@
+﻿@model List<CouponDTO>?
+
+@{
+    var pageTitle = "Coupons";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Coupon", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+<!-- Content Start -->
+<div class="container-fluid py-5">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <a asp-action="Create" asp-controller="Coupon" class="btn border border-secondary rounded-pill px-3 text-primary float-end">
+                    <i class="fa fa-plus me-2 text-primary"></i> Create Coupon
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+                    <thead class="text-dark bg-light">
+                        <tr class="m-2">
+                            <th class="py-3" scope="col">S. No.</th>
+                            <th class="py-3" scope="col">Coupon Code</th>
+                            <th class="py-3" scope="col">Discount Amount</th>
+                            <th class="py-3" scope="col">Minimum Amount</th>
+                            <th class="py-3" scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model is not null && Model.Count > 0)
+                        {
+                            var index = 0;
+                            @foreach (var coupon in Model)
+                            {
+                                <tr>
+                                    <td scope="row">
+                                        <span>@(++index)</span>
+                                    </td>
+                                    <td>
+                                        <a href="#">
+                                            <span class="badge bg-dark text-wrap fs-6">@coupon.CouponCode</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="mt-2">&#8377;@coupon.DiscountAmount</span>
+                                    </td>
+                                    <td>
+                                        <span class="mt-2">&#8377;@coupon.MinimumAmount</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm rounded-circle bg-light border" asp-action="Delete" asp-controller="Coupon" asp-route-couponId="@coupon.CouponId">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>
+                                    <p class="mb-0 mt-4">No coupons found!</p>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Content End -->

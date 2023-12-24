@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{6ACAA611-F59F-4021-BD64-82AE88100D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MT.Services.CouponAPI", "MT.Services.CouponAPI\MT.Services.CouponAPI.csproj", "{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.Services.CouponAPI", "MT.Services.CouponAPI\MT.Services.CouponAPI.csproj", "{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MT.Web", "MT.Web\MT.Web.csproj", "{E9797C20-ED3F-4561-85D9-8526ACD5A214}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +25,17 @@ Global
 		{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9797C20-ED3F-4561-85D9-8526ACD5A214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9797C20-ED3F-4561-85D9-8526ACD5A214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9797C20-ED3F-4561-85D9-8526ACD5A214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9797C20-ED3F-4561-85D9-8526ACD5A214}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{52799201-E2FE-4A41-99D9-4FD5D9DBA7C2} = {6ACAA611-F59F-4021-BD64-82AE88100D24}
+		{E9797C20-ED3F-4561-85D9-8526ACD5A214} = {496FEE62-6372-4079-8E09-5F4FD63C7BBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B5C9238-24FE-4077-88D0-B8F41C048E6D}

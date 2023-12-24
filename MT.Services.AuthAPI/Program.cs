@@ -1,24 +1,31 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MT.Services.CouponAPI;
-using MT.Services.CouponAPI.DBContext;
+using MT.Services.AuthAPI.DBContext;
+using MT.Services.AuthAPI.Models;
+using MT.Services.AuthAPI.Service;
+using MT.Services.AuthAPI.Service.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<CouponDbContext>(options =>
+builder.Services.AddDbContext<AuthDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-var mapper = MapperConfig.RegisterMaps().CreateMapper();
-builder.Services.AddSingleton(mapper);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("ApiSettings:JwtOptions"));
+
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<AuthDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -31,7 +38,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -40,11 +46,10 @@ ApplyMigrations();
 
 app.Run();
 
-
 void ApplyMigrations()
 {
     using var scope = app.Services.CreateScope();
-    var _db = scope.ServiceProvider.GetRequiredService<CouponDbContext>();
+    var _db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     if (_db.Database.GetPendingMigrations().Count() > 0)
         _db.Database.Migrate();
 }

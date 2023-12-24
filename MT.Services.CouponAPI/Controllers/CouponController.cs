@@ -6,7 +6,7 @@ using MT.Services.CouponAPI.Models.DTO;
 
 namespace MT.Services.CouponAPI.Controllers;
 
-[Route("api/Coupon")]
+[Route("api/coupon")]
 [ApiController]
 public class CouponController : ControllerBase
 {

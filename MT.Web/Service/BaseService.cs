@@ -10,19 +10,26 @@ namespace MT.Web.Service;
 public class BaseService : IBaseService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    public BaseService(IHttpClientFactory httpClientFactory)
+    private readonly ITokenProvider _tokenProvider;
+    public BaseService(IHttpClientFactory httpClientFactory, ITokenProvider tokenProvider)
     {
         _httpClientFactory = httpClientFactory;
+        _tokenProvider = tokenProvider;
     }
 
-    public async Task<ResponseDto?> SendAsync(RequestDto request)
+    public async Task<ResponseDto?> SendAsync(RequestDto request, bool withBearer = true)
     {
         try
         {
             HttpClient client = _httpClientFactory.CreateClient("MT_API");
             HttpRequestMessage message = new();
             message.Headers.Add("Accept", SD.JsonType);
-            //token
+            // token
+            if (withBearer)
+            {
+                var token = _tokenProvider.GetToken();
+                message.Headers.Add("Authorization", $"Bearer {token}");
+            }
 
             message.RequestUri = new Uri(request.Url);
             if (request.Data != null)

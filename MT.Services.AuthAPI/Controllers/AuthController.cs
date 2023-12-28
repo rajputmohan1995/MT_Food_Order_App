@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegistrationDTO registration)
     {
-        var response = new ResponseDto();
+            var response = new ResponseDto();
         var errMessage = await _authService.Register(registration);
         if (!string.IsNullOrEmpty(errMessage))
         {

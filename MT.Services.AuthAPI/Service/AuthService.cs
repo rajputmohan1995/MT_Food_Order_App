@@ -67,12 +67,14 @@ public class AuthService : IAuthService
             Name = appUser.Name,
             PhoneNumber = appUser.PhoneNumber,
         };
-        userDTO.Token = GenerateJWT(appUser);
+
+        var roles = await _userManager.GetRolesAsync(appUser);
+        userDTO.Token = GenerateJWT(appUser, roles);
         return userDTO;
     }
 
     [NonAction]
-    private string GenerateJWT(AppUser appUser)
+    private string GenerateJWT(AppUser appUser, IEnumerable<string> roles)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
@@ -83,6 +85,8 @@ public class AuthService : IAuthService
             new Claim(JwtRegisteredClaimNames.Sub, appUser.Id),
             new Claim(JwtRegisteredClaimNames.Name, appUser.Name)
         };
+
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

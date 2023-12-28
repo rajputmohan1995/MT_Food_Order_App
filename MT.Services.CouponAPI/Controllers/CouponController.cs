@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MT.Services.CouponAPI.DBContext;
 using MT.Services.CouponAPI.Models;
 using MT.Services.CouponAPI.Models.DTO;
+using MT.Services.CouponAPI.Utility;
 
 namespace MT.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
 [ApiController]
+[Authorize]
 public class CouponController : ControllerBase
 {
     public readonly CouponDbContext _couponDbContext;
@@ -17,7 +20,7 @@ public class CouponController : ControllerBase
     {
         _couponDbContext = couponDbContext;
         _responseDto = new ResponseDto();
-        _mapper = mapper;   
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -72,6 +75,7 @@ public class CouponController : ControllerBase
 
     [HttpPost]
     [Route("Create")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public ResponseDto Create([FromBody] CouponDTO coupon)
     {
         try
@@ -92,6 +96,7 @@ public class CouponController : ControllerBase
 
     [HttpPut]
     [Route("Update")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public ResponseDto Update([FromBody] CouponDTO coupon)
     {
         try
@@ -112,6 +117,7 @@ public class CouponController : ControllerBase
 
     [HttpDelete]
     [Route("{id:int}")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public ResponseDto Delete(int id)
     {
         try

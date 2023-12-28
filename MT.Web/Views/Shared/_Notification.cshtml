@@ -4,7 +4,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js" asp-append-version="true"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" asp-append-version="true"></script>
 
+    <style>
+        #toast-container > div {
+            opacity: inherit;
+        }
+    </style>
+
     <script type="text/javascript">
+
+        toastr.options = {
+            "timeOut": "0",
+            "positionClass": "toast-top-center",
+        }
 
         @if (TempData["error"] != null)
         {

@@ -500,3 +500,7 @@ a {
 }
 /*** Footer End ***/
 
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: #ffffff !important;
+}

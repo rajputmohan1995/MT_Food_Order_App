@@ -1,0 +1,70 @@
+﻿@model RegistrationDTO
+@{
+    Layout = "_AuthLayout";
+    var pageTitle = "Registration";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+<div class="container-fluid contact py-5">
+    <div class="container">
+        <div class="p-5 bg-light rounded">
+            <div class="row g-4">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <form asp-action="Register" asp-controller="Auth" class="">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-4">
+                            <label class="mb-2">Name <span class="text-danger">*</span></label>
+                            <input type="text" asp-for="Name" class="w-100 form-control border-0 py-3 mb-2" placeholder="Enter Name">
+                            <span asp-validation-for="Name" class="w-100 text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="mb-2">Email <span class="text-danger">*</span></label>
+                            <input type="email" asp-for="Email" class="w-100 form-control border-0 py-3 mb-2" placeholder="Enter Email">
+                            <span asp-validation-for="Email" class="w-100 text-danger mb-2"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="mb-2">Phone No.</label>
+                            <input type="tel" asp-for="PhoneNumber" class="w-100 form-control border-0 py-3 mb-2" placeholder="Enter Phone No.">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="mb-2">Password <span class="text-danger">*</span></label>
+                            <input type="password" asp-for="Password" class="w-100 form-control border-0 py-3 mb-2" placeholder="Enter Password">
+                            <span asp-validation-for="Password" class="w-100 text-danger mb-2"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="mb-2">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" asp-for="ConfirmPassword" class="w-100 form-control border-0 py-3 mb-2" placeholder="Enter Confirm Password">
+                            <span asp-validation-for="ConfirmPassword" class="w-100 text-danger mb-2"></span>
+                        </div>
+
+                        <button id="btnRegister" class="w-100 btn form-control border-secondary py-3 bg-white text-primary " type="submit">Submit</button>
+                    </form>
+                </div>
+                <div class="col-lg-3"></div>
+
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="my-auto text-center text-md-end">
+                        Already have an account!
+                        <a asp-action="Login" asp-controller="Auth">Go to Login</a>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MT.Web.Models;
 using MT.Web.Service.Interface;
+using MT.Web.Utility;
 using Newtonsoft.Json;
 
 namespace MT.Web.Controllers;
@@ -20,7 +21,7 @@ public class CouponController : Controller
         var responseCoupons = await _couponService.GetAllCouponAsync();
         if (responseCoupons != null && responseCoupons.IsSuccess)
             couponList = JsonConvert.DeserializeObject<List<CouponDTO>>(responseCoupons.Result?.ToString() ?? "");
-        else TempData["error"] = "No record found";
+        else TempData["error"] = responseCoupons?.Message ?? SD.InternalErrorOccured;
 
         return View(couponList);
     }
@@ -37,10 +38,14 @@ public class CouponController : Controller
         if (ModelState.IsValid)
         {
             var responseCoupons = await _couponService.CreateCouponAsync(coupon);
-            if (responseCoupons != null && responseCoupons.IsSuccess)
+            if (responseCoupons != null)
             {
-                TempData["success"] = "Coupon created successfully";
-                return RedirectToAction(nameof(Index));
+                if (responseCoupons.IsSuccess)
+                {
+                    TempData["success"] = "Coupon created successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+                else TempData["error"] = responseCoupons.Message;
             }
             else TempData["error"] = "Internal error occured while adding new coupon";
         }
@@ -68,10 +73,14 @@ public class CouponController : Controller
         if (coupon?.CouponId > 0)
         {
             var responseCoupon = await _couponService.DeleteCouponAsync(coupon.CouponId);
-            if (responseCoupon != null && responseCoupon.IsSuccess)
+            if (responseCoupon != null)
             {
-                TempData["success"] = "Coupon deleted successfully";
-                return RedirectToAction(nameof(Index));
+                if (responseCoupon.IsSuccess)
+                {
+                    TempData["success"] = "Coupon deleted successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+                else TempData["error"] = responseCoupon.Message;
             }
             else TempData["error"] = "Internal error occured while deleting the coupon";
         }

@@ -1,4 +1,5 @@
-﻿@model List<CouponDTO>?
+﻿@using MT.Web.Utility
+@model List<CouponDTO>?
 
 @{
     var pageTitle = "Coupons";
@@ -51,10 +52,10 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="mt-2">&#8377;@coupon.DiscountAmount</span>
+                                        <span class="mt-2">@coupon.DiscountAmount.ToString("c")</span>
                                     </td>
                                     <td>
-                                        <span class="mt-2">&#8377;@coupon.MinimumAmount</span>
+                                        <span class="mt-2">@coupon.MinimumAmount.ToString("c")</span>
                                     </td>
                                     <td>
                                         <a class="btn btn-sm rounded-circle bg-light border" asp-action="Delete" asp-controller="Coupon" asp-route-couponId="@coupon.CouponId">

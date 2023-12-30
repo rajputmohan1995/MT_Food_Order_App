@@ -12,6 +12,7 @@ public class SD
     public const string TokenCookie = "JWT_Token";
 
     public const string InternalErrorOccured = "Internal Error Occured";
+    public const string RupeeHtml = "&#8377;";
     public enum ApiType
     {
         GET, POST, PUT, DELETE

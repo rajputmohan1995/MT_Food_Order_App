@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using MT.Services.CouponAPI.DBContext;
 using Microsoft.OpenApi.Models;
-using MT.Services.CouponAPI.Extensions;
+using MT.Services.ProductAPI.DBContext;
+using MT.Services.ProductAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddDbContext<CouponDbContext>(options =>
+builder.Services.AddDbContext<ProductDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -66,14 +66,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 ApplyMigrations();
-
 app.Run();
-
 
 void ApplyMigrations()
 {
     using var scope = app.Services.CreateScope();
-    var _db = scope.ServiceProvider.GetRequiredService<CouponDbContext>();
+    var _db = scope.ServiceProvider.GetRequiredService<ProductDbContext>();
     if (_db.Database.GetPendingMigrations().Count() > 0)
         _db.Database.Migrate();
 }

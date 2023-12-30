@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+SD.CouponAPIBase = builder.Configuration["ServiceUrls:ProductAPI"] ?? "";
 SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"] ?? "";
 SD.AuthAPIBase = builder.Configuration["ServiceUrls:AuthAPI"] ?? "";
 

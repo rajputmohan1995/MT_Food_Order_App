@@ -3,6 +3,7 @@
 public class SD
 {
     public const string JsonType = "application/json";
+    public static string ProductAPIBase = "";
     public static string CouponAPIBase = "";
     public static string AuthAPIBase = "";
 

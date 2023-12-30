@@ -2,7 +2,7 @@
 using MT.Services.CouponAPI.Models;
 using MT.Services.CouponAPI.Models.DTO;
 
-namespace MT.Services.CouponAPI;
+namespace MT.Services.CouponAPI.Extensions;
 
 public class MapperConfig
 {

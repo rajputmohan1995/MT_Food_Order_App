@@ -518,3 +518,7 @@ a {
     margin-left: auto !important;
     margin-right: auto !important;
 }
+
+.h-250 {
+    height: 250px;
+}

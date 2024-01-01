@@ -1,0 +1,35 @@
+﻿@model List<ProductDTO>
+
+<div class="row g-4">
+
+    @foreach (var recommendedProduct in Model)
+    {
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="rounded position-relative fruite-item">
+                <div class="fruite-img">
+                    <img src="@recommendedProduct.ImageUrl" class="img-fluid w-100 rounded-top h-250" alt="image not found!" />
+                </div>
+                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
+                    @recommendedProduct.CategoryName
+                </div>
+                <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                    <h4>
+                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@recommendedProduct.ProductId">
+                            @recommendedProduct.Name
+                        </a>
+                    </h4>
+
+                    <p class="show-2-lines">@recommendedProduct.Description</p>
+
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                        <p class="text-dark fs-5 fw-bold mb-0">@recommendedProduct.Price.ToString("c")</p>
+                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
+                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

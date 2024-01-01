@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MT.Web.Models;
@@ -25,7 +26,9 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        return View(new LoginDTO());
+        var loginObj = new LoginDTO();
+        loginObj.ReturnUrl = HttpContext.Request.Query["returnUrl"].ToString();
+        return View(loginObj);
     }
 
     [HttpPost]
@@ -43,7 +46,10 @@ public class AuthController : Controller
                     var userData = JsonConvert.DeserializeObject<UserDTO>(loginResponse.Result.ToString());
                     await SignInAsync(userData);
                     _tokenProvider.SetToken(userData?.Token);
-                    return RedirectToAction("Index", "Home");
+
+                    if (!string.IsNullOrWhiteSpace(login?.ReturnUrl) && Url.IsLocalUrl(login?.ReturnUrl))
+                        return Redirect(login.ReturnUrl);
+                    else return RedirectToAction("Index", "Home");
                 }
                 else
                 {

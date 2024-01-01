@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MT.Services.Web;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MT.Web.Models;
 using MT.Web.Service.Interface;
 using MT.Web.Utility;
 using Newtonsoft.Json;
@@ -130,5 +131,34 @@ public class ProductController : Controller
             else TempData["error"] = "Internal error occured while deleting the product";
         }
         return View(product);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Detail(int id)
+    {
+        var productDetail = new ProductDetailDTO();
+        try
+        {
+            var productResponse = await _productService.GetProductByIdAsync(id);
+            if (productResponse != null)
+            {
+                if (productResponse.IsSuccess)
+                {
+                    productDetail.ProductDetail = JsonConvert.DeserializeObject<ProductDTO>(productResponse.Result.ToString() ?? "");
+
+                    var relatedProducts = await _productService.GetAllProductAsync();
+                    productDetail.RelatedProducts = JsonConvert.DeserializeObject<List<ProductDTO>>(relatedProducts.Result.ToString() ?? "");
+                    return View(productDetail);
+                }
+                else TempData["error"] = productResponse.Message;
+            }
+            else TempData["error"] = "Internal error occured while fetching product details";
+        }
+        catch (Exception ex)
+        {
+            TempData["error"] = ex.Message;
+        }
+        return View(productDetail);
     }
 }

@@ -17,6 +17,8 @@
                 <div class="col-lg-6">
                     <form asp-action="Login" asp-controller="Auth" class="">
 
+                        <input type="hidden" asp-for="ReturnUrl" />
+
                         <div asp-validation-summary="All" class="w-100 text-danger my-2"></div>
 
                         @Html.AntiForgeryToken()

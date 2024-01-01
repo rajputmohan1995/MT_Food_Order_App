@@ -10,7 +10,6 @@ namespace MT.Services.ProductAPI.Controllers;
 
 [Route("api/product")]
 [ApiController]
-[Authorize]
 public class ProductController : ControllerBase
 {
     public readonly ProductDbContext _productDbContext;

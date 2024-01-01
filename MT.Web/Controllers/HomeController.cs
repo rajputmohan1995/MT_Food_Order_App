@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MT.Web.Models;
+using MT.Web.Service.Interface;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace MT.Web.Controllers;
@@ -7,15 +9,28 @@ namespace MT.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IProductService _productService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IProductService productService)
     {
         _logger = logger;
+        _productService = productService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var homeDtoResponse = new HomeDTO();
+        try
+        {
+            var allProducts = await _productService.GetAllProductAsync();
+            if (allProducts?.IsSuccess == true)
+                homeDtoResponse.RecommendedProducts = JsonConvert.DeserializeObject<List<ProductDTO>>(allProducts?.Result?.ToString() ?? "") ?? new();
+        }
+        catch (Exception ex)
+        {
+            TempData["error"] = ex.Message;
+        }
+        return View(homeDtoResponse);
     }
 
     public IActionResult Privacy()

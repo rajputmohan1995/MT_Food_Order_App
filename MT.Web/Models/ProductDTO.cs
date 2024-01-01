@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MT.Services.Web;
+namespace MT.Web.Models;
 
 public class ProductDTO
 {

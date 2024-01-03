@@ -1,0 +1,6 @@
+@MT.Services.ShoppingCartAPI_HostAddress = http://localhost:5148
+
+GET {{MT.Services.ShoppingCartAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

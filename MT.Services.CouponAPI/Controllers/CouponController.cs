@@ -10,7 +10,7 @@ namespace MT.Services.CouponAPI.Controllers;
 
 [Route("api/coupon")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class CouponController : ControllerBase
 {
     public readonly CouponDbContext _couponDbContext;

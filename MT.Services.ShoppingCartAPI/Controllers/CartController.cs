@@ -5,7 +5,6 @@ using MT.Services.CouponAPI.DBContext;
 using MT.Services.ShoppingCartAPI.Models;
 using MT.Services.ShoppingCartAPI.Models.DTO;
 using MT.Services.ShoppingCartAPI.Service.Interfaces;
-using System.Reflection.PortableExecutable;
 
 namespace MT.Services.ShoppingCartAPI.Controllers;
 
@@ -31,7 +30,7 @@ public class CartController : ControllerBase
 
     [HttpPost]
     [Route("upsert")]
-    public async Task<ResponseDto> Upsert(ShoppingCartDTO shoppingCart)
+    public async Task<ResponseDto> Upsert([FromBody] ShoppingCartDTO shoppingCart)
     {
         try
         {
@@ -84,7 +83,7 @@ public class CartController : ControllerBase
 
     [HttpPost]
     [Route("remove-item")]
-    public async Task<ResponseDto> Remove(int cartHeaderId, int cartDetailId)
+    public async Task<ResponseDto> RemoveItem(int cartHeaderId, int cartDetailId)
     {
         try
         {

@@ -1,0 +1,130 @@
+﻿@model ShoppingCartDTO
+@{
+    var pageTitle = "My Cart";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Cart", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+@if (Model.CartHeader == null || Model.CartHeader.CartHeaderId <= 0 ||
+Model.CartDetails == null || Model.CartDetails.ToList().Count <= 0)
+{
+    <div class="container py-5">
+        <div class="row g-4 text-center">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="bg-light rounded border">
+
+                    <div class="py-4 mb-4 border-top border-bottom justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4">Your cart is empty!</h5>
+                    </div>
+                    <a class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                       asp-action="Index" asp-controller="Home">
+                        Explore Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="text-dark bg-light">
+                            <tr>
+                                <th scope="col" style="min-width:150px;">Product</th>
+                                <th scope="col" style="min-width:80px;">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col" style="min-width:80px;">Total</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                            @foreach (var cartItem in Model.CartDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Detail" asp-controller="Product" asp-route-id="@cartItem.ProductId">
+                                            <div class="align-items-center">
+                                                <img src="@cartItem.Product.ImageUrl" class="img-fluid me-2 rounded-circle"
+                                                     style="width:100px; height:100px;" alt="image not found!">
+                                            </div>
+                                            <p class="mb-0 mt-2">@cartItem.Product.Name</p>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <p class="mb-0 mt-5">@cartItem.Product.Price.ToString("c")</p>
+                                    </td>
+                                    <td>
+                                        <div class="input-group quantity mt-5" style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm text-center border-0" value="@cartItem.Quantity" />
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-5">@((cartItem.Product.Price * cartItem.Quantity).ToString("c"))</p>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-md rounded-circle bg-light border mt-5">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="my-3">
+                    <input type="text" class="border rounded me-2 p-3 mb-2" placeholder="Coupon Code">
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 justify-content-end">
+                <div class="bg-light rounded">
+                    <div class="p-4">
+                        <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5 class="mb-0 me-4">Subtotal:</h5>
+                            <p class="mb-0">@((Model.CartHeader.CartTotal + Model.CartHeader.Discount).ToString("c"))</p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-0 me-4">Discount</h5>
+                            <div class="">
+                                <p class="mb-0">@Model.CartHeader.Discount.ToString("c")</p>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-end fst-italic fw-bold">Coupon: @Model.CartHeader.CouponCode</p>
+                    </div>
+                    <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                        <h5 class="mb-0 ps-4 me-4">Total</h5>
+                        <p class="mb-0 pe-4">@Model.CartHeader.CartTotal.ToString("c")</p>
+                    </div>
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">
+                        Proceed Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

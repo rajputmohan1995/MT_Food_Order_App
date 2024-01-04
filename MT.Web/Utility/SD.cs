@@ -6,6 +6,7 @@ public class SD
     public static string ProductAPIBase = "";
     public static string CouponAPIBase = "";
     public static string AuthAPIBase = "";
+    public static string ShoppingCartAPIBase = "";
 
     public static string RoleAdmin = "admin".ToUpper();
     public static string RoleCustomer = "customer".ToUpper();

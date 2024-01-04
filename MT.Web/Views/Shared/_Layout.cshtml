@@ -74,19 +74,25 @@
                     </div>
                     <div class="d-flex m-3 me-0">
 
-                        <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
-                            <div class="dropdown">
-                                <a href="#" class="my-auto dropdown-toggle" id="userDropdownLink" data-bs-toggle="dropdown" aria-expanded="false">
+
+                            <div class="dropdown me-4 my-auto">
+                                <a href="#" class="my-auto dropdown-toggle" id="userDropdownLink" data-bs-toggle="dropdown"
+                                   aria-expanded="false">
                                     <i class="fas fa-user fa-2x mr-2"></i>
                                 </a>
                                 <ul class="dropdown-menu bg-light" aria-labelledby="userDropdownLink">
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
-                                    <li><a class="dropdown-item" href="#">View Cart</a></li>
                                     <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
                                 </ul>
                             </div>
+
+                            <a asp-action="Index" asp-controller="Cart" class="position-relative me-4 my-auto" title="View Cart">
+                                <i class="fa fa-shopping-bag fa-2x"></i>
+                            </a>
+
+                            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fas fa-search text-primary"></i></button>
                         }
                     </div>
                 </div>

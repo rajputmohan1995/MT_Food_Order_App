@@ -11,9 +11,9 @@ public class CouponService : ICouponService
     {
         _baseService = baseService;
     }
-    public Task<ResponseDto?> CreateCouponAsync(CouponDTO coupon)
+    public async Task<ResponseDto?> CreateCouponAsync(CouponDTO coupon)
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             ApiType = SD.ApiType.POST,
             Url = $"{SD.CouponAPIBase}/api/coupon/create",
@@ -21,42 +21,42 @@ public class CouponService : ICouponService
         });
     }
 
-    public Task<ResponseDto?> DeleteCouponAsync(int id)
+    public async Task<ResponseDto?> DeleteCouponAsync(int id)
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             ApiType = SD.ApiType.DELETE,
             Url = $"{SD.CouponAPIBase}/api/coupon/{id}"
         });
     }
 
-    public Task<ResponseDto?> GetAllCouponAsync()
+    public async Task<ResponseDto?> GetAllCouponAsync()
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             Url = $"{SD.CouponAPIBase}/api/coupon"
         });
     }
 
-    public Task<ResponseDto?> GetCouponAsync(string couponCode)
+    public async Task<ResponseDto?> GetCouponAsync(string couponCode)
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             Url = $"{SD.CouponAPIBase}/api/getbycode/{couponCode}"
         });
     }
 
-    public Task<ResponseDto?> GetCouponByIdAsync(int id)
+    public async Task<ResponseDto?> GetCouponByIdAsync(int id)
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             Url = $"{SD.CouponAPIBase}/api/coupon/{id}"
         });
     }
 
-    public Task<ResponseDto?> UpdateCouponAsync(CouponDTO coupon)
+    public async Task<ResponseDto?> UpdateCouponAsync(CouponDTO coupon)
     {
-        return _baseService.SendAsync(new RequestDto()
+        return await _baseService.SendAsync(new RequestDto()
         {
             ApiType = SD.ApiType.PUT,
             Url = $"{SD.CouponAPIBase}/api/coupon/update",

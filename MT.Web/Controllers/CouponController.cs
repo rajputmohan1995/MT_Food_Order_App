@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace MT.Web.Controllers;
 
-public class CouponController : Controller
+public class CouponController : BaseController
 {
     private readonly ICouponService _couponService;
     public CouponController(ICouponService couponService)

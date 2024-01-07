@@ -2,8 +2,9 @@
 
 public class ShoppingCartDTO
 {
+    public bool DirectUpdate { get; set; }
     public CartHeaderDTO CartHeader { get; set; }
-    public IEnumerable<CartDetailDTO> CartDetails { get; set; }
+    public List<CartDetailDTO> CartDetails { get; set; }
 }
 
 public class CartHeaderDTO

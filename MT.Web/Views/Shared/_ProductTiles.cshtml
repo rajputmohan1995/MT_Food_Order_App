@@ -1,13 +1,19 @@
 ﻿@model List<ProductDTO>
 
 <div class="row g-4">
-
     @foreach (var recommendedProduct in Model)
     {
+        <form id="frmAddProductToCart_@recommendedProduct.ProductId" asp-action="Upsert" asp-controller="Cart" hidden>
+            <input hidden name="ProductId" value="@recommendedProduct.ProductId" />
+            <input hidden name="Quantity" value="1" />
+        </form>
+
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="rounded position-relative fruite-item">
                 <div class="fruite-img">
-                    <img src="@recommendedProduct.ImageUrl" class="img-fluid w-100 rounded-top h-250" alt="image not found!" />
+                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@recommendedProduct.ProductId">
+                        <img src="@recommendedProduct.ImageUrl" class="img-fluid w-100 rounded-top h-250" alt="image not found!" />
+                    </a>
                 </div>
                 <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">
                     @recommendedProduct.CategoryName
@@ -23,9 +29,9 @@
 
                     <div class="d-flex justify-content-between flex-lg-wrap">
                         <p class="text-dark fs-5 fw-bold mb-0">@recommendedProduct.Price.ToString("c")</p>
-                        <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary">
+                        <button class="btn border border-secondary rounded-pill px-3 text-primary btnAddToCart" product-id="@recommendedProduct.ProductId">
                             <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

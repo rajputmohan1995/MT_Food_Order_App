@@ -17,47 +17,48 @@
                 <div class="row g-4">
                     <div class="col-lg-5">
                         <div class="border rounded">
-                            <a href="#">
-                                <img src="@Model?.ProductDetail?.ImageUrl" class="img-fluid rounded" alt="image not found!" />
-                            </a>
+                            <img src="@Model?.ProductDetail?.ImageUrl" class="img-fluid rounded" alt="image not found!" />
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <h4 class="fw-bold mb-3">@Model?.ProductDetail?.Name</h4>
-                        <p class="mb-3">Category: @Model?.ProductDetail?.CategoryName</p>
-                        <h5 class="fw-bold mb-3">@Model?.ProductDetail?.Price.ToString("c")</h5>
-                        @* <div class="d-flex mb-4">
-                        <i class="fa fa-star text-secondary"></i>
-                        <i class="fa fa-star text-secondary"></i>
-                        <i class="fa fa-star text-secondary"></i>
-                        <i class="fa fa-star text-secondary"></i>
-                        <i class="fa fa-star"></i>
-                        *@
-                        <p class="mb-4">@Model?.ProductDetail?.Description</p>
-                        <div class="input-group quantity mb-5" style="width: 100px;">
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                    <i class="fa fa-minus"></i>
-                                </button>
+                        <form asp-action="Upsert" asp-controller="Cart">
+                            <input hidden asp-for="ProductId" />
+
+                            <h2 class="fw-bold mb-3">@Model?.ProductDetail?.Name</h2>
+                            <div class="mb-3 text-white bg-primary px-3 py-1 rounded position-absolute">
+                                Category: <strong>@Model?.ProductDetail?.CategoryName</strong>
                             </div>
-                            <input type="text" class="form-control form-control-sm text-center border-0" value="1">
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                            <h5 class="fw-bold mb-3">@Model?.ProductDetail?.Price.ToString("c")</h5>
+
+                            <p class="mb-4">@Model?.ProductDetail?.Description</p>
+                            <div class="input-group quantity mb-4" style="width: 100px;">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm text-center border-0 numeric-input-only"
+                                       min="1" max="100" asp-for="Quantity" />
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <a href="#" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
-                            <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
-                        </a>
+                            <button type="submit" class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <h1 class="fw-bold mb-0">Related products</h1>
+        <div class="container vesitable">
+            <h1 class="mb-0">Related products</h1>
+            <partial name="_ProductCarousel" model="@Model?.RelatedProducts" />
+        </div>
 
-        <partial name="_ProductCarousel" model="@Model.RelatedProducts" />
     </div>
 </div>

@@ -54,6 +54,7 @@ public class CartController : ControllerBase
                                                             .AsNoTracking()
                                                             .FirstOrDefaultAsync(u => u.ProductId == shoppingCart.CartDetails.First().ProductId &&
                                                                                  u.CartHeaderId == cartHeaderFromDb.CartHeaderId);
+
                 if (cartDetailsFromDb == null)
                 {
                     shoppingCart.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
@@ -63,12 +64,23 @@ public class CartController : ControllerBase
                 }
                 else
                 {
-                    shoppingCart.CartDetails.First().Quantity += cartDetailsFromDb.Quantity;
+                    if (!shoppingCart.DirectUpdate)
+                        shoppingCart.CartDetails.First().Quantity += cartDetailsFromDb.Quantity;
                     shoppingCart.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
                     shoppingCart.CartDetails.First().CartDetailId = cartDetailsFromDb.CartDetailId;
+
+                    if (shoppingCart.CartDetails.First().Quantity <= 0)
+                    {
+                        _responseDto.Message = "Invalid item quantity entered";
+                        _responseDto.IsSuccess = false;
+                        return _responseDto;
+                    }
                     var updatedCartDetails = _mapper.Map<List<CartDetail>>(shoppingCart.CartDetails);
                     _cartDbContext.CartDetails.UpdateRange(updatedCartDetails);
                     await _cartDbContext.SaveChangesAsync();
+
+                    if (!string.IsNullOrWhiteSpace(cartHeaderFromDb.CouponCode))
+                        await IsCouponApplicable(cartHeaderFromDb.CartHeaderId);
                 }
             }
             _responseDto.Result = shoppingCart;
@@ -96,6 +108,10 @@ public class CartController : ControllerBase
                 _cartDbContext.CartHeaders.Remove(removeCartHeader);
             }
             await _cartDbContext.SaveChangesAsync();
+
+            if (cartTotalCount > 0)
+                await IsCouponApplicable(cartHeaderId);
+
             _responseDto.Result = true;
         }
         catch (Exception ex)
@@ -172,8 +188,9 @@ public class CartController : ControllerBase
                     var couponFromDb = await _couponService.GetCouponByCode(shoppingCartDTO.CartHeader.CouponCode);
                     if (couponFromDb == null || couponFromDb.CouponId == 0)
                     {
-                        _responseDto.Message = "Invalid coupon!"; _responseDto.IsSuccess = false;
-                        return _responseDto;
+                        cartFromDb.CouponCode = null;
+                        _responseDto.Message = "Invalid coupon!";
+                        _responseDto.IsSuccess = false;
                     }
                     else
                     {
@@ -194,7 +211,7 @@ public class CartController : ControllerBase
                         }
                         else
                         {
-                            cartFromDb.CouponCode = shoppingCartDTO.CartHeader.CouponCode;
+                            cartFromDb.CouponCode = couponFromDb.CouponCode;
                             _responseDto.Result = true;
                         }
                     }
@@ -210,5 +227,32 @@ public class CartController : ControllerBase
             _responseDto.IsSuccess = false;
         }
         return _responseDto;
+    }
+
+
+    [NonAction]
+    private async Task IsCouponApplicable(int cartHeaderId)
+    {
+        var allProducts = await _productService.GetProductsAsync();
+        var finalCartTotal = 0d;
+
+        var cartHeaderFromDb = _cartDbContext.CartHeaders.First(c => c.CartHeaderId == cartHeaderId);
+        var allCartDetailsFromDb = _cartDbContext.CartDetails
+                                                .AsNoTracking()
+                                                .Where(u => u.CartHeaderId == cartHeaderId)
+                                                .ToList();
+
+        foreach (var cartItem in allCartDetailsFromDb)
+        {
+            finalCartTotal += (allProducts.First(x => x.ProductId == cartItem.ProductId).Price * cartItem.Quantity);
+        }
+
+        var couponFromDb = await _couponService.GetCouponByCode(cartHeaderFromDb.CouponCode);
+        if (finalCartTotal < couponFromDb.MinimumAmount)
+        {
+            cartHeaderFromDb.CouponCode = null;
+            _cartDbContext.CartHeaders.Update(cartHeaderFromDb);
+            await _cartDbContext.SaveChangesAsync();
+        }
     }
 }

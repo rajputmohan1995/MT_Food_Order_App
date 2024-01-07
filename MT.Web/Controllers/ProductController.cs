@@ -7,12 +7,14 @@ using Newtonsoft.Json;
 
 namespace MT.Web.Controllers;
 
-public class ProductController : Controller
+public class ProductController : BaseController
 {
     private readonly IProductService _productService;
-    public ProductController(IProductService productService)
+    private readonly ICartService _cartService;
+    public ProductController(IProductService productService, ICartService cartService)
     {
         _productService = productService;
+        _cartService = cartService;
     }
 
     public async Task<IActionResult> Index()
@@ -137,7 +139,7 @@ public class ProductController : Controller
     [Authorize]
     public async Task<IActionResult> Detail(int id)
     {
-        var productDetail = new ProductDetailDTO();
+        var productDetail = new ProductDetailDTO() { ProductId = id, Quantity = 1 };
         try
         {
             var productResponse = await _productService.GetProductByIdAsync(id);

@@ -25,4 +25,18 @@ public class ProductService : IProductService
         }
         return new List<ProductDTO>();
     }
+
+    public async Task<ProductDTO> GetProductByIdAsync(int id)
+    {
+        var client = _httpClientFactory.CreateClient("Product");
+
+        var response = await client.GetAsync($"/api/product/{id}");
+        var apiContent = await response.Content.ReadAsStringAsync();
+        var responseObj = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
+        if (responseObj?.IsSuccess == true)
+        {
+            return JsonConvert.DeserializeObject<ProductDTO>(responseObj.Result.ToString());
+        }
+        return new ProductDTO();
+    }
 }

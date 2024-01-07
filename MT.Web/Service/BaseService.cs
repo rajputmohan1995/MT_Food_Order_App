@@ -61,6 +61,8 @@ public class BaseService : IBaseService
                     return new() { IsSuccess = false, Message = "Access Denied" };
                 case HttpStatusCode.Unauthorized:
                     return new() { IsSuccess = false, Message = "Unauthorized" };
+                case HttpStatusCode.BadRequest:
+                    return new() { IsSuccess = false, Message = "Bad Request" };
                 default:
                     var apiContent = await apiResponse.Content.ReadAsStringAsync();
                     var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
@@ -72,4 +74,5 @@ public class BaseService : IBaseService
             return new() { IsSuccess = false, Message = ex.Message };
         }
     }
+
 }

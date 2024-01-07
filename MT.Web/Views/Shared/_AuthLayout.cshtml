@@ -68,8 +68,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 
     <!-- Template Javascript -->
-    <script src="~/js/main.js" asp-append-version="true"></script>
+    @* <script src="~/js/main.js" asp-append-version="true"></script> *@
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script type="text/javascript">
+        $(document).ready(function () {
+            spinner(0);
+
+            $('body').find('input:enabled:visible:first').focus();
+        });
+
+        var spinner = function () {
+            setTimeout(function () {
+                if ($('#spinner').length > 0) {
+                    $('#spinner').removeClass('show');
+                }
+            }, 1);
+        };
+    </script>
 </body>
 </html>

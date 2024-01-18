@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MT.Web.Models;
 using MT.Web.Service.Interface;
 using MT.Web.Utility;
@@ -27,7 +25,7 @@ public class AuthController : Controller
     public IActionResult Login()
     {
         var loginObj = new LoginDTO();
-        loginObj.ReturnUrl = HttpContext.Request.Query["returnUrl"].ToString();
+        //loginObj.ReturnUrl = HttpContext.Request.Query["returnUrl"].ToString();
         return View(loginObj);
     }
 

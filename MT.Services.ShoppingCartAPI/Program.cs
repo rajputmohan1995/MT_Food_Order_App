@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MT.MessageBus;
 using MT.Services.CouponAPI.DBContext;
 using MT.Services.ShoppingCartAPI.Extensions;
 using MT.Services.ShoppingCartAPI.Service;
@@ -26,6 +27,8 @@ builder.Services.AddScoped<ApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
+
 builder.Services.AddHttpClient("Product",
     u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();

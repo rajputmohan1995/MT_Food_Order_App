@@ -10,4 +10,9 @@ public class BaseController : Controller
         var userId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
         return userId;
     }
+    public string? GetLoggedInEmailId()
+    {
+        var userEmailId = User.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value;
+        return userEmailId;
+    }
 }

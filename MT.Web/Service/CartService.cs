@@ -1,5 +1,4 @@
 ﻿using MT.Web.Models;
-using MT.Web.Models;
 using MT.Web.Service.Interface;
 using MT.Web.Utility;
 
@@ -46,6 +45,16 @@ public class CartService : ICartService
         return await _baseService.SendAsync(new RequestDto()
         {
             Url = $"{SD.ShoppingCartAPIBase}/api/cart/upsert",
+            ApiType = SD.ApiType.POST,
+            Data = shoppingCartDTO
+        });
+    }
+
+    public async Task<ResponseDto?> EmailCartAsync(ShoppingCartDTO shoppingCartDTO)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.ShoppingCartAPIBase}/api/cart/email-cart-request",
             ApiType = SD.ApiType.POST,
             Data = shoppingCartDTO
         });

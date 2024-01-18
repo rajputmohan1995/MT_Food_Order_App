@@ -147,4 +147,28 @@ public class CartController : BaseController
         }
         return RedirectToAction("Index");
     }
+
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(ShoppingCartDTO shoppingCartDTO)
+    {
+        try
+        {
+            shoppingCartDTO.CartHeader.UserId = GetLoggedInUserId();
+            shoppingCartDTO.CartHeader.UserEmail = GetLoggedInEmailId();
+
+            var removeItemResult = await _cartService.EmailCartAsync(shoppingCartDTO);
+            if (removeItemResult != null)
+            {
+                if (removeItemResult.IsSuccess)
+                    TempData["success"] = "Cart details send successfully to registered email. You'll shortly receive an email.";
+                else TempData["error"] = removeItemResult.Message;
+            }
+            else TempData["error"] = "Internal error occured while sending an email for cart details";
+        }
+        catch (Exception ex)
+        {
+            TempData["error"] = ex.Message;
+        }
+        return RedirectToAction("Index");
+    }
 }

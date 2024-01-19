@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MT.Services.EmailAPI.DBContext;
 using MT.Services.EmailAPI.Extensions;
+using MT.Services.EmailAPI.Messaging;
+using MT.Services.EmailAPI.Messaging.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<EmailDbContext>(options =>
 var mapper = MapperConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -66,6 +70,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 ApplyMigrations();
+app.UseAzureServiceBusConsumer();
 app.Run();
 
 void ApplyMigrations()

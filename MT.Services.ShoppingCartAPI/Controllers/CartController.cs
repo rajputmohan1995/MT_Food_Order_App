@@ -241,7 +241,7 @@ public class CartController : ControllerBase
     {
         try
         {
-            var topicOrQueueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart");
+            var topicOrQueueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
             await _messageBus.PublishMessage(shoppingCartDTO, topicOrQueueName);
         }
         catch (Exception ex)

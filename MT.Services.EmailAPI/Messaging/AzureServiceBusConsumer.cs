@@ -1,6 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
 using MT.Services.EmailAPI.Messaging.Interface;
 using MT.Services.EmailAPI.Models;
+using MT.Services.EmailAPI.Services;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -8,14 +9,17 @@ namespace MT.Services.EmailAPI.Messaging;
 
 public class AzureServiceBusConsumer : IAzureServiceBusConsumer
 {
-    public readonly string serviceBusConnectionString;
-    public readonly string emailCartQueue;
-    public readonly IConfiguration _configuration;
+    private readonly string serviceBusConnectionString;
+    private readonly string emailCartQueue;
+    private readonly IConfiguration _configuration;
+    private readonly EmailService _emailService;
+
     private ServiceBusProcessor _emailCartProcessor;
 
-    public AzureServiceBusConsumer(IConfiguration configuration)
+    public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
     {
         _configuration = configuration;
+        _emailService = emailService;
 
         serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
         emailCartQueue = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
@@ -44,6 +48,7 @@ public class AzureServiceBusConsumer : IAzureServiceBusConsumer
         try
         {
             ShoppingCartDTO objMessage = JsonConvert.DeserializeObject<ShoppingCartDTO>(body);
+            await _emailService.EmailCartAndLogAsync(objMessage);
             await args.CompleteMessageAsync(args.Message);
         }
         catch

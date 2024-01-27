@@ -18,11 +18,12 @@ public class CartController : ControllerBase
     IMapper _mapper;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
+    private readonly IUserService _userService;
     private readonly IMessageBus _messageBus;
     private readonly IConfiguration _configuration;
 
     public CartController(ShoppingCartDbContext cartDbContext, IMapper mapper,
-            IProductService productService, ICouponService couponService, 
+            IProductService productService, ICouponService couponService, IUserService userService,
             IMessageBus messageBus, IConfiguration configuration)
     {
         _cartDbContext = cartDbContext;
@@ -30,6 +31,7 @@ public class CartController : ControllerBase
         _mapper = mapper;
         _productService = productService;
         _couponService = couponService;
+        _userService = userService;
         _messageBus = messageBus;
         _configuration = configuration;
     }
@@ -130,7 +132,7 @@ public class CartController : ControllerBase
 
     [HttpGet]
     [Route("get-items/{userId}")]
-    public async Task<ResponseDto> GetItems(string userId)
+    public async Task<ResponseDto> GetItems(string userId, bool loadUser = false)
     {
         try
         {
@@ -161,6 +163,9 @@ public class CartController : ControllerBase
                         shoppingCartDTO.CartHeader.Discount = couponFromDb.DiscountAmount;
                     }
                 }
+
+                if (loadUser)
+                    shoppingCartDTO.User = await _userService.GetUserAsync(cartHeader.UserId);
 
                 _responseDto.Result = shoppingCartDTO;
             }

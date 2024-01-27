@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using MT.Services.EmailAPI.DBContext;
 using MT.Services.EmailAPI.Extensions;
 using MT.Services.EmailAPI.Messaging;
 using MT.Services.EmailAPI.Messaging.Interface;
+using MT.Services.EmailAPI.Service;
+using MT.Services.EmailAPI.Service.Interfaces;
+using MT.Services.EmailAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,39 +20,22 @@ var mapper = MapperConfig.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IProductService, ProductService>();
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+
+var optionBuilder = new DbContextOptionsBuilder<EmailDbContext>();
+optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSingleton(serviceDescriptor => new EmailService(optionBuilder.Options, serviceDescriptor.GetRequiredService<IProductService>(),
+    builder.Configuration, builder.Environment));
+
+
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(option =>
-{
-    option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Description = "Enter the bearer authorization string as following: `Bearer Generated-JWT-Token`",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    option.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id= JwtBearerDefaults.AuthenticationScheme
-                }
-            },
-            new string[]{ }
-        }
-    });
-});
-
-builder.AddAppAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -64,7 +48,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

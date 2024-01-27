@@ -5,6 +5,7 @@ public class ShoppingCartDTO
     public bool DirectUpdate { get; set; }
     public CartHeaderDTO CartHeader { get; set; }
     public List<CartDetailDTO> CartDetails { get; set; }
+    public UserDTO? User { get; set; }
 }
 
 public class CartHeaderDTO

@@ -27,12 +27,13 @@ builder.Services.AddScoped<ApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 builder.Services.AddHttpClient("Product",
     u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
-builder.Services.AddHttpClient("Coupon", 
+builder.Services.AddHttpClient("Coupon",
     u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
 

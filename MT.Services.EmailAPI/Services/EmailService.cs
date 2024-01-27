@@ -88,6 +88,12 @@ public class EmailService : IEmailService
         await LogAndEmail(invoiceEmailContent, shoppingCartDTO.CartHeader.UserEmail);
     }
 
+    public async Task RegisterUserAndLogAsync(UserDTO userDTO)
+    {
+        var registerUserEmailContent = $"User Registration Successful. <br />Email: {userDTO.Email}<br />Name: {userDTO.Name}" ;
+        await LogAndEmail(registerUserEmailContent, _configuration.GetValue<string>("AdminDetails:Email"));
+    }
+
     public async Task<bool> LogAndEmail(string invoiceEmailContent, string emailAddress)
     {
         try
@@ -109,4 +115,5 @@ public class EmailService : IEmailService
             return false;
         }
     }
+
 }

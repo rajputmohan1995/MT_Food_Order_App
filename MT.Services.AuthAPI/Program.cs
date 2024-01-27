@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MT.MessageBus;
 using MT.Services.AuthAPI.DBContext;
 using MT.Services.AuthAPI.Models;
 using MT.Services.AuthAPI.Service;
@@ -26,6 +27,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 var app = builder.Build();
 

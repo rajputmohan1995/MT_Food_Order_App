@@ -7,5 +7,4 @@ public class RegistrationDTO
     public string Name { get; set; }
     public string? PhoneNumber { get; set; }
     public string? RoleName { get; set; }
-
 }

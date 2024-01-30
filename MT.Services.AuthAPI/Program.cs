@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MT.MessageBus;
 using MT.Services.AuthAPI.DBContext;
+using MT.Services.AuthAPI.Extensions;
 using MT.Services.AuthAPI.Models;
 using MT.Services.AuthAPI.Service;
 using MT.Services.AuthAPI.Service.Interface;
@@ -29,6 +30,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
+builder.AddAppAuthentication();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,6 +44,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

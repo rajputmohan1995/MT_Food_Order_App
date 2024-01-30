@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.Services.ProductAPI", "M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.Services.ShoppingCartAPI", "MT.Services.ShoppingCartAPI\MT.Services.ShoppingCartAPI.csproj", "{15FD2E26-D594-487D-B214-ADAD852264A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MT.MessageBus", "MT.MessageBus\MT.MessageBus.csproj", "{2E231609-A2B8-4172-AE08-1CC4108F274F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.MessageBus", "MT.MessageBus\MT.MessageBus.csproj", "{2E231609-A2B8-4172-AE08-1CC4108F274F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MT.Services.EmailAPI", "MT.Services.EmailAPI\MT.Services.EmailAPI.csproj", "{CC978E5C-FB78-4CF7-B4A5-1B2C86098A94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MT.Services.EmailAPI", "MT.Services.EmailAPI\MT.Services.EmailAPI.csproj", "{CC978E5C-FB78-4CF7-B4A5-1B2C86098A94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

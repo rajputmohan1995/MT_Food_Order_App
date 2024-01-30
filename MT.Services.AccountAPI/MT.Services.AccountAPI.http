@@ -1,0 +1,6 @@
+@MT.Services.AccountAPI_HostAddress = http://localhost:5224
+
+GET {{MT.Services.AccountAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

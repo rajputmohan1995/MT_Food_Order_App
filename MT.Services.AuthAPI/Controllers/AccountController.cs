@@ -7,6 +7,7 @@ using MT.Services.AuthAPI.Models.DTO;
 namespace MT.Services.AuthAPI.Controllers;
 
 [Authorize]
+[Route("api/account")]
 public class AccountController : ControllerBase
 {
     private readonly AuthDbContext _authDbContext;
@@ -30,7 +31,7 @@ public class AccountController : ControllerBase
             else
             {
                 _responseDto.IsSuccess = true;
-                _responseDto.Result = new UserDTO()
+                var userDTO = new UserDTO()
                 {
                     ID = userDetails.Id,
                     Name = userDetails.Name,
@@ -47,6 +48,8 @@ public class AccountController : ControllerBase
                     ShippingState = userDetails.ShippingState,
                     ShippingZipCode = userDetails.ShippingZipCode,
                 };
+
+                _responseDto.Result = userDTO;
             }
         }
         catch (Exception ex)
@@ -69,27 +72,17 @@ public class AccountController : ControllerBase
             else
             {
                 userDetails.Name = user.Name;
+                userDetails.PhoneNumber = user.PhoneNumber;
                 userDetails.BillingAddress = user.BillingAddress;
                 userDetails.BillingCity = user.BillingCity;
                 userDetails.BillingState = user.BillingState;
                 userDetails.BillingCountry = user.BillingCountry;
                 userDetails.BillingZipCode = user.BillingZipCode;
-                if (user.SameBillingAndShippingAddress)
-                {
-                    userDetails.ShippingAddress = user.BillingAddress;
-                    userDetails.ShippingCity = user.BillingCity;
-                    userDetails.ShippingState = user.BillingState;
-                    userDetails.ShippingCountry = user.BillingCountry;
-                    userDetails.ShippingZipCode = user.BillingZipCode;
-                }
-                else
-                {
-                    userDetails.ShippingAddress = user.ShippingAddress;
-                    userDetails.ShippingCity = user.ShippingCity;
-                    userDetails.ShippingState = user.ShippingState;
-                    userDetails.ShippingCountry = user.ShippingCountry;
-                    userDetails.ShippingZipCode = user.ShippingZipCode;
-                }
+                userDetails.ShippingAddress = user.ShippingAddress;
+                userDetails.ShippingCity = user.ShippingCity;
+                userDetails.ShippingState = user.ShippingState;
+                userDetails.ShippingCountry = user.ShippingCountry;
+                userDetails.ShippingZipCode = user.ShippingZipCode;
 
                 await _authDbContext.SaveChangesAsync();
                 _responseDto.IsSuccess = true;

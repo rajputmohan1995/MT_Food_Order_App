@@ -52,8 +52,9 @@ public class AuthController : Controller
                 else
                 {
                     loginResponse.IsSuccess = false;
-                    ModelState.AddModelError("CustomError", loginResponse.Message);
-                    TempData["error"] = loginResponse.Message;
+                    var errorMsg = "Invalid username/password";
+                    ModelState.AddModelError("CustomError", errorMsg);
+                    TempData["error"] = errorMsg;
                 }
             }
             else

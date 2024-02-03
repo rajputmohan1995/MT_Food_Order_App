@@ -41,4 +41,33 @@ public class AuthService : IAuthService
             Data = registration
         }, withBearer: false);
     }
+
+    public Task<ResponseDto?> GetUserDetailsAsync(string userId)
+    {
+        return _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.GET,
+            Url = $"{SD.AuthAPIBase}/api/account/get-user?userId={userId}"
+        });
+    }
+
+    public Task<ResponseDto?> SaveUserDetailsAsync(UserDTO user)
+    {
+        return _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.POST,
+            Url = $"{SD.AuthAPIBase}/api/account/save-user",
+            Data = user
+        });
+    }
+
+    public Task<ResponseDto?> ChangePasswordAsync(ChangePasswordDTO changePassword)
+    {
+        return _baseService.SendAsync(new RequestDto()
+        {
+            ApiType = SD.ApiType.POST,
+            Url = $"{SD.AuthAPIBase}/api/auth/change-password",
+            Data = changePassword
+        });
+    }
 }

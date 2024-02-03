@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MT.MessageBus;
 using MT.Services.AuthAPI.Models.DTO;
 using MT.Services.AuthAPI.Service.Interface;
@@ -55,6 +56,34 @@ public class AuthController : ControllerBase
         response.Result = loginResponse;
         response.Message = "Login successful";
         return Ok(response);
+    }
+
+    [HttpPost]
+    [Route("change-password")]
+    [Authorize]
+    public async Task<ResponseDto> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+    {
+        var _responseDto = new ResponseDto();
+        try
+        {
+            var changePasswordResponse = await _authService.ChangePassword(changePasswordDTO);
+            if (!string.IsNullOrWhiteSpace(changePasswordResponse))
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = changePasswordResponse;
+            }
+            else
+            {
+                _responseDto.IsSuccess = true;
+                _responseDto.Result = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            _responseDto.Message = ex.Message;
+            _responseDto.IsSuccess = false;
+        }
+        return _responseDto;
     }
 
     [HttpPost("assign-role")]

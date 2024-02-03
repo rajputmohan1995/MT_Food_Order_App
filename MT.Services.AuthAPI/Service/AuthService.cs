@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MT.Services.AuthAPI.DBContext;
@@ -71,6 +72,20 @@ public class AuthService : IAuthService
         var roles = await _userManager.GetRolesAsync(appUser);
         userDTO.Token = GenerateJWT(appUser, roles);
         return userDTO;
+    }
+
+    public async Task<string> ChangePassword(ChangePasswordDTO changePasswordDTO)
+    {
+        try
+        {
+            var appUser = await _context.AppUsers.FirstOrDefaultAsync(x => x.Id == changePasswordDTO.UserID);
+            var result = await _userManager.ChangePasswordAsync(appUser, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+            if (result.Succeeded) return "";
+            else return result.Errors.FirstOrDefault()?.Description ?? "Error Encountered";
+        }
+        catch (Exception) { }
+
+        return "Error Encountered";
     }
 
     [NonAction]

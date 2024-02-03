@@ -83,7 +83,8 @@
                                     <i class="fas fa-user fa-2x mr-2"></i>
                                 </a>
                                 <ul class="dropdown-menu bg-light" aria-labelledby="userDropdownLink">
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-action="Index" asp-controller="Account">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Account">Change Password</a></li>
                                     <li><a class="dropdown-item" asp-action="Logout" asp-controller="Auth">Logout</a></li>
                                 </ul>
                             </div>

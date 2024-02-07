@@ -30,11 +30,11 @@ builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
 
-builder.Services.AddHttpClient("Product",
-    u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+builder.Services.AddHttpClient("User", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:UserAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
-builder.Services.AddHttpClient("Coupon",
-    u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
+    .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddControllers();

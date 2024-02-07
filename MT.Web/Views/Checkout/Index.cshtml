@@ -18,46 +18,46 @@
 
                 <div class="form-item w-100">
                     <label class="form-label my-3">Full Name<sup>*</sup></label>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" asp-for="User.Name" placeholder="Enter Full Name" />
                 </div>
 
                 <div class="row">
                     <div class="col-md-12 col-lg-6">
                         <div class="form-item w-100">
                             <label class="form-label my-3">Mobile<sup>*</sup></label>
-                            <input type="tel" class="form-control">
+                            <input type="tel" class="form-control" asp-for="User.PhoneNumber" placeholder="Enter Phone Number" />
                         </div>
                     </div>
                     <div class="col-md-12 col-lg-6">
                         <div class="form-item w-100">
                             <label class="form-label my-3">Email Address<sup>*</sup></label>
-                            <input type="email" class="form-control">
+                            <input type="email" class="form-control" asp-for="User.Email" placeholder="Enter Phone Number" />
                         </div>
                     </div>
                 </div>
 
                 <div class="form-item">
-                    <label class="form-label my-3">Address<sup>*</sup></label>
-                    <input type="text" class="form-control" placeholder="House Number Street Name">
+                    <label class="form-label my-3">Billing Address<sup>*</sup></label>
+                    <input type="text" class="form-control" placeholder="Enter Billing Address" asp-for="User.BillingAddress" />
                 </div>
 
                 <div class="row">
                     <div class="col-sm-12 col-md-4 col-lg-4">
                         <div class="form-item">
-                            <label class="form-label my-3">City<sup>*</sup></label>
-                            <input type="text" class="form-control">
+                            <label class="form-label my-3">Billing City<sup>*</sup></label>
+                            <input type="text" class="form-control" asp-for="User.BillingCity" placeholder="Enter City" />
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-4 col-lg-4">
                         <div class="form-item">
-                            <label class="form-label my-3">State<sup>*</sup></label>
-                            <input type="text" class="form-control">
+                            <label class="form-label my-3">Billing State<sup>*</sup></label>
+                            <input type="text" class="form-control" asp-for="User.BillingState" placeholder="Enter State" />
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-4 col-lg-4">
                         <div class="form-item">
-                            <label class="form-label my-3">Country<sup>*</sup></label>
-                            <input type="text" class="form-control">
+                            <label class="form-label my-3">Billing Country<sup>*</sup></label>
+                            <input type="text" class="form-control" asp-for="User.BillingCountry" placeholder="Enter Country" />
                         </div>
                     </div>
                 </div>
@@ -65,17 +65,63 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-4 col-lg-4">
                         <div class="form-item">
-                            <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                            <input type="text" class="form-control">
+                            <label class="form-label my-3">Billing ZipCode<sup>*</sup></label>
+                            <input type="number" class="form-control" asp-for="User.BillingZipCode" placeholder="Enter ZipCode" />
                         </div>
                     </div>
                 </div>
 
 
                 <div class="form-check my-3">
-                    <input class="form-check-input" type="checkbox" id="Address-1" name="Address" value="Address">
-                    <label class="form-check-label" for="Address-1">Ship to a different address?</label>
+                    <input class="form-check-input" type="checkbox" id="chkToggleShippingAddressSection" />
+                    <label class="form-check-label" for="chkToggleShippingAddressSection">Ship to a different address?</label>
                 </div>
+
+                <div class="col-md-12 col-lg-12" id="dvUserShippingAddress" style="display: none;">
+                    <hr class="mb-0" />
+
+                    <div class="row">
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-item">
+                                <label class="form-label my-3">Shipping Address<sup>*</sup></label>
+                                <input type="text" class="form-control" placeholder="Enter Shipping Address" asp-for="User.ShippingAddress" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <div class="form-item">
+                                <label class="form-label my-3">Shipping City<sup>*</sup></label>
+                                <input type="text" class="form-control" asp-for="User.ShippingCity" placeholder="Enter Shipping City" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <div class="form-item">
+                                <label class="form-label my-3">Shipping State<sup>*</sup></label>
+                                <input type="text" class="form-control" asp-for="User.ShippingState" placeholder="Enter Shipping State" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <div class="form-item">
+                                <label class="form-label my-3">Shipping Country<sup>*</sup></label>
+                                <input type="text" class="form-control" asp-for="User.ShippingCountry" placeholder="Enter Shipping Country" />
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3">
+                            <div class="form-item">
+                                <label class="form-label my-3">Shipping ZipCode<sup>*</sup></label>
+                                <input type="text" class="form-control" asp-for="User.ShippingZipCode" placeholder="Enter Shipping ZipCode" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
 
                 <hr>
 
@@ -190,3 +236,18 @@
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+            $("#chkToggleShippingAddressSection").change(function () {
+                debugger;
+                if (this.checked)
+                    $("#dvUserShippingAddress").show();
+                else $("#dvUserShippingAddress").hide();
+            });
+        });
+    </script>
+}

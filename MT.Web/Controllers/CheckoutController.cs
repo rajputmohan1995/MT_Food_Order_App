@@ -20,11 +20,12 @@ public class CheckoutController : BaseController
         try
         {
             var userId = GetLoggedInUserId();
-            var userCartDetails = await _cartService.GetCartByUserIdAsync(userId);
+            var userCartDetails = await _cartService.GetCartByUserIdAsync(userId, loadUser: true);
             if (userCartDetails != null && userCartDetails.IsSuccess)
             {
                 model = JsonConvert.DeserializeObject<ShoppingCartDTO>(Convert.ToString(userCartDetails.Result));
             }
+            else return RedirectToAction("Index", "Cart");
         }
         catch (Exception ex)
         {

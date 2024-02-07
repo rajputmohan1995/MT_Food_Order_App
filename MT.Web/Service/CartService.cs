@@ -22,11 +22,11 @@ public class CartService : ICartService
         });
     }
 
-    public async Task<ResponseDto?> GetCartByUserIdAsync(string userId)
+    public async Task<ResponseDto?> GetCartByUserIdAsync(string userId, bool loadUser = false)
     {
         return await _baseService.SendAsync(new RequestDto()
         {
-            Url = $"{SD.ShoppingCartAPIBase}/api/cart/get-items/{userId}",
+            Url = $"{SD.ShoppingCartAPIBase}/api/cart/get-items/{userId}?loadUser={loadUser}",
             ApiType = SD.ApiType.GET
         });
     }

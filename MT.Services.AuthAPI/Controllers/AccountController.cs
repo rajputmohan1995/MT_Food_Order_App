@@ -20,7 +20,7 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    [Route("get-user")]
+    [Route("get-user/{userId}")]
     public async Task<ResponseDto> GetUserDetails(string userId)
     {
         try

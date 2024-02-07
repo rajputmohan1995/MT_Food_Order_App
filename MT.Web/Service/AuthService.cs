@@ -47,7 +47,7 @@ public class AuthService : IAuthService
         return _baseService.SendAsync(new RequestDto()
         {
             ApiType = SD.ApiType.GET,
-            Url = $"{SD.AuthAPIBase}/api/account/get-user?userId={userId}"
+            Url = $"{SD.AuthAPIBase}/api/account/get-user/{userId}"
         });
     }
 

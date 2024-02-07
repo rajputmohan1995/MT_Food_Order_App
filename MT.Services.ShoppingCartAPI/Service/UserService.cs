@@ -16,7 +16,7 @@ public class UserService : IUserService
     {
         var client = _httpClientFactory.CreateClient("User");
 
-        var response = await client.GetAsync($"/api/user/{userId}");
+        var response = await client.GetAsync($"/api/account/get-user/{userId}");
         var apiContent = await response.Content.ReadAsStringAsync();
         var responseObj = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
         if (responseObj?.IsSuccess == true)

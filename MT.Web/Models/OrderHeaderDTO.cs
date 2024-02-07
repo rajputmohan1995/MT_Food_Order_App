@@ -1,4 +1,4 @@
-﻿namespace MT.Services.OrderAPI.Models.DTO;
+﻿namespace MT.Web.Models.DTO;
 
 public class OrderHeaderDTO
 {

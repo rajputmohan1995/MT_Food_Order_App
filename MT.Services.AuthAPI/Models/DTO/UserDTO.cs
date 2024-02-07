@@ -17,4 +17,5 @@ public class UserDTO
     public string? ShippingState { get; set; }
     public string? ShippingCountry { get; set; }
     public string? ShippingZipCode { get; set; }
+    public bool DifferentShippingAddress { get; set; }
 }

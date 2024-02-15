@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using MT.Services.OrderAPI.DBContext;
 using MT.Services.OrderAPI.Extensions;
 using MT.Services.OrderAPI.Utility;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,8 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("StripeSecretKey");
 
 builder.AddAppAuthentication();
 builder.Services.AddAuthorization();

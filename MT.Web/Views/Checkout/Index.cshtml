@@ -11,11 +11,86 @@
 <partial name="_PageHeader" model="@pageHeader" />
 
 <div class="container py-5">
-    <h1 class="mb-4">Billing details</h1>
     <form method="post" asp-action="Index" asp-controller="Checkout">
+        <div class="row">
+            <a asp-action="Index" asp-controller="Cart" class="text-primary pb-3">Back</a>
+        </div>
+
         <div class="row g-5">
+
+            <div class="col-md-12 col-lg-6 col-xl-5">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="text-dark bg-light">
+                            <tr>
+                                <th scope="col" style="min-width:150px;">Product</th>
+                                <th scope="col" style="min-width:80px;">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col" style="min-width:80px;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                for (var index = 0; index < Model.CartDetails.Count; index++)
+                                {
+                                    var cartItem = Model.CartDetails[index];
+                                    <tr>
+                                        <td>
+                                            <div class="align-items-center">
+                                                <img src="@cartItem.Product.ImageUrl" class="img-fluid me-2 rounded-circle"
+                                                     style="width:100px; height:100px;" alt="image not found!">
+                                            </div>
+                                            <p class="mb-0 mt-2">@cartItem.Product.Name</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 mt-5">@cartItem.Product.Price.ToString("c")</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 mt-5">@cartItem.Quantity</p>
+                                        </td>
+                                        <td>
+                                            <p class="mb-0 mt-5">@((cartItem.Product.Price * cartItem.Quantity).ToString("c"))</p>
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr>
+                                    <td colspan="2" rowspan="3"></td>
+                                    <td>
+                                        <p class="mt-3 fw-bold">Subtotal</p>
+                                    </td>
+                                    <td>
+                                        <p class="mt-3 fw-bold">@((Model.CartHeader.CartTotal).ToString("c"))</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p class="mt-3 fw-bold">Discount</p>
+                                    </td>
+                                    <td>
+                                        <p class="mt-3 fw-bold">@((Model.CartHeader.Discount).ToString("c"))</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p class="mt-3 text-uppercase fw-bold">Total</p>
+                                    </td>
+                                    <td>
+                                        <p class="mt-3 fw-bold">@((Model.CartHeader.CartTotal + Model.CartHeader.Discount).ToString("c"))</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
             <div class="col-md-12 col-lg-6 col-xl-7">
 
+                <h3>Billing Details</h3>
+                <hr />
                 <div class="form-item w-100">
                     <label class="form-label my-3">Full Name<sup>*</sup></label>
                     <input type="text" class="form-control" asp-for="User.Name" placeholder="Enter Full Name" />
@@ -126,113 +201,14 @@
                 <hr>
 
                 <div class="form-item">
-                    <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="8" placeholder="Order Notes (Optional)"></textarea>
+                    <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="4" placeholder="Order Notes (Optional)"></textarea>
                 </div>
             </div>
 
-            <div class="col-md-12 col-lg-6 col-xl-5">
-                <div class="table-responsive">
-                    <table class="table table-bordered text-center">
-                        <thead class="text-dark bg-light">
-                            <tr>
-                                <th scope="col" style="min-width:150px;">Product</th>
-                                <th scope="col" style="min-width:80px;">Price</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col" style="min-width:80px;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @{
-                                for (var index = 0; index < Model.CartDetails.Count; index++)
-                                {
-                                    var cartItem = Model.CartDetails[index];
-                                    <tr>
-                                        <td>
-                                            <div class="align-items-center">
-                                                <img src="@cartItem.Product.ImageUrl" class="img-fluid me-2 rounded-circle"
-                                                     style="width:100px; height:100px;" alt="image not found!">
-                                            </div>
-                                            <p class="mb-0 mt-2">@cartItem.Product.Name</p>
-                                        </td>
-                                        <td>
-                                            <p class="mb-0 mt-5">@cartItem.Product.Price.ToString("c")</p>
-                                        </td>
-                                        <td>
-                                            <p class="mb-0 mt-5">@cartItem.Quantity</p>
-                                        </td>
-                                        <td>
-                                            <p class="mb-0 mt-5">@((cartItem.Product.Price * cartItem.Quantity).ToString("c"))</p>
-                                        </td>
-                                    </tr>
-                                }
+        </div>
 
-                                <tr>
-                                    <td colspan="2" rowspan="3"></td>
-                                    <td>
-                                        <p class="mt-3 fw-bold">Subtotal</p>
-                                    </td>
-                                    <td>
-                                        <p class="mt-3 fw-bold">@((Model.CartHeader.CartTotal).ToString("c"))</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <p class="mt-3 fw-bold">Discount</p>
-                                    </td>
-                                    <td>
-                                        <p class="mt-3 fw-bold">@((Model.CartHeader.Discount).ToString("c"))</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <p class="mt-3 text-uppercase fw-bold">Total</p>
-                                    </td>
-                                    <td>
-                                        <p class="mt-3 fw-bold">@((Model.CartHeader.CartTotal + Model.CartHeader.Discount).ToString("c"))</p>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                    <div class="col-12">
-                        <div class="form-check text-start my-3">
-                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer" value="Transfer">
-                            <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
-                        </div>
-                        <p class="text-start text-dark">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                    </div>
-                </div>
-                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                    <div class="col-12">
-                        <div class="form-check text-start my-3">
-                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="Payments">
-                            <label class="form-check-label" for="Payments-1">Check Payments</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                    <div class="col-12">
-                        <div class="form-check text-start my-3">
-                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery" value="Delivery">
-                            <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                    <div class="col-12">
-                        <div class="form-check text-start my-3">
-                            <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal" value="Paypal">
-                            <label class="form-check-label" for="Paypal-1">Paypal</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                    <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
-                </div>
-            </div>
+        <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+            <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
         </div>
     </form>
 </div>

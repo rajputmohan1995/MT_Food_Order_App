@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MT.Web.Models;
+using MT.Web.Models.DTO;
 using MT.Web.Service.Interface;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace MT.Web.Controllers;
 
@@ -73,11 +75,27 @@ public class CheckoutController : BaseController
                 var orderSaveResponse = await _orderService.CreateOrderAsync(cartToSend);
                 if (orderSaveResponse != null && orderSaveResponse.IsSuccess)
                 {
-                    TempData["success"] = "Order placed successfully";
-                    //return RedirectToAction("New", "Order");
+                    var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+                    var orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDTO>(orderSaveResponse.Result.ToString());
+
+                    var stripReqDto = new StripeRequestDTO()
+                    {
+                        OrderHeader = orderHeaderDto,
+                        ApprovedUrl = domain + $"checkout/confirmation?orderId={orderHeaderDto.OrderHeaderId}",
+                        CancelUrl = domain + "checkout/index"
+                    };
+
+                    var createStripeSessionResponse = await _orderService.CreatePaymentSessionAsync(stripReqDto);
+                    if (createStripeSessionResponse != null && createStripeSessionResponse.IsSuccess)
+                    {
+                        var createSessionDto = JsonConvert.DeserializeObject<StripeRequestDTO>(createStripeSessionResponse.Result.ToString());
+                        Response.Headers.Add("Location", createSessionDto.StripSessionUrl);
+                        return new StatusCodeResult((int)HttpStatusCode.RedirectMethod);
+                    }
+                    else TempData["error"] = orderSaveResponse?.Message ?? "Internal error occured while placing your order";
+
                 }
-                else
-                    TempData["error"] = orderSaveResponse?.Message ?? "Internal error occured while placing your order";
+                else TempData["error"] = orderSaveResponse?.Message ?? "Internal error occured while placing your order";
             }
         }
         catch (Exception ex)
@@ -86,4 +104,11 @@ public class CheckoutController : BaseController
         }
         return RedirectToAction("Index");
     }
+
+
+    public async Task<IActionResult> Confirmation(string orderId)
+    {
+        return View(orderId);
+    }
+
 }

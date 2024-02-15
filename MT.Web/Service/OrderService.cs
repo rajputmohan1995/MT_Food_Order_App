@@ -21,4 +21,14 @@ public class OrderService : IOrderService
             Data = shoppingCartDTO
         });
     }
+
+    public async Task<ResponseDto?> CreatePaymentSessionAsync(StripeRequestDTO stripeRequestDTO)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.OrderAPIBase}/api/order/create-payment-session",
+            ApiType = SD.ApiType.POST,
+            Data = stripeRequestDTO
+        });
+    }
 }

@@ -1,0 +1,27 @@
+﻿@model int
+
+@{
+    var pageTitle = "Confirmation";
+    ViewData["Title"] = pageTitle;
+    var pageHeader = new PageDefaultHeader(pageTitle);
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
+    pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Cart", PageName = "Order" });
+    pageHeader.PageLinks.Add(new() { Action = "Checkout", Controller = "Confirmation", PageName = pageTitle, IsCurrentPage = true });
+}
+
+<partial name="_PageHeader" model="@pageHeader" />
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h1 class="display-1"></h1>
+            <h1 class="mb-4">
+                Order placed                <i class="bi bi-check-circle text-secondary"></i>
+
+            </h1>
+            <h4>Order Id: #@Model</h4>
+            <p class="mb-4">We have received your order and will be ready in 30 minutes (approx) during regular business hours!</p>
+            <a class="btn border-secondary rounded-pill py-3 px-5" href="index.html">Show Details</a>
+        </div>
+    </div>
+</div>

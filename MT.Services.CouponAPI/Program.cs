@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MT.Services.CouponAPI.DBContext;
 using Microsoft.OpenApi.Models;
 using MT.Services.CouponAPI.Extensions;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +46,8 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("StripeSecretKey");
 
 builder.AddAppAuthentication();
 builder.Services.AddAuthorization();

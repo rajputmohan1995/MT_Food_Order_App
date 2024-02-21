@@ -9,4 +9,6 @@ public class StripeRequestDTO
     public string ApprovedUrl { get; set; }
     public string CancelUrl { get; set; }
     public OrderHeaderDTO OrderHeader { get; set; }
+    public UserDTO UserDetails { get; set; }
+
 }

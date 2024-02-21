@@ -80,8 +80,9 @@ public class CheckoutController : BaseController
 
                     var stripReqDto = new StripeRequestDTO()
                     {
-                        OrderHeader = orderHeaderDto,
-                        ApprovedUrl = domain + $"checkout/confirmation?orderId={orderHeaderDto.OrderHeaderId}",
+                        OrderHeader = orderHeaderDto, 
+                        UserDetails = cartToSend.User,
+                        ApprovedUrl = domain + $"checkout/confirmation?orderId={orderHeaderDto.OrderHeaderId}&orderConfirmationId={Guid.NewGuid().ToString()}",
                         CancelUrl = domain + "checkout/index"
                     };
 
@@ -106,7 +107,7 @@ public class CheckoutController : BaseController
     }
 
 
-    public async Task<IActionResult> Confirmation(string orderId)
+    public async Task<IActionResult> Confirmation(int orderId, string orderConfirmationId)
     {
         return View(orderId);
     }

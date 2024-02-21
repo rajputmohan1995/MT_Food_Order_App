@@ -7,6 +7,7 @@ using MT.Services.OrderAPI.Utility;
 using MT.Services.OrderAPI.Models;
 using MT.Web.Models;
 using Stripe.Checkout;
+using Stripe;
 
 namespace MT.Services.OrderAPI.Controllers
 {
@@ -56,12 +57,43 @@ namespace MT.Services.OrderAPI.Controllers
         {
             try
             {
+                var customerCreateOptions = new CustomerCreateOptions
+                {
+                    Name = stripeRequestDTO.UserDetails.Name,
+                    Email = stripeRequestDTO.UserDetails.Email,
+                    Address = new AddressOptions
+                    {
+                        Line1 = stripeRequestDTO.UserDetails.BillingAddress,
+                        PostalCode = stripeRequestDTO.UserDetails.BillingZipCode,
+                        City = stripeRequestDTO.UserDetails.BillingCity,
+                        State = stripeRequestDTO.UserDetails.BillingState,
+                        Country = stripeRequestDTO.UserDetails.BillingCountry,
+                    }
+                };
+                var customerService = new CustomerService();
+                var newCustomer = customerService.Create(customerCreateOptions);
+
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = stripeRequestDTO.ApprovedUrl,
                     CancelUrl = stripeRequestDTO.CancelUrl,
                     Mode = "payment",
-                    LineItems = new List<SessionLineItemOptions>()
+                    LineItems = new List<SessionLineItemOptions>(),
+                    CustomerEmail = stripeRequestDTO.OrderHeader.UserEmail,
+                    BillingAddressCollection = "required",
+                    ShippingAddressCollection = new SessionShippingAddressCollectionOptions()
+                    {
+                        AllowedCountries = new List<string>() { "IN", "US" }
+                    },
+                    Currency = "INR"
+                };
+
+                var discountObj = new List<SessionDiscountOptions>()
+                {
+                    new SessionDiscountOptions()
+                    {
+                        Coupon = stripeRequestDTO.OrderHeader.CouponCode
+                    }
                 };
 
                 foreach (var item in stripeRequestDTO.OrderHeader.OrderDetails)
@@ -86,18 +118,23 @@ namespace MT.Services.OrderAPI.Controllers
                     options.LineItems.Add(sessionLineItem);
                 }
 
+                if (stripeRequestDTO.OrderHeader.Discount > 0)
+                {
+                    options.Discounts = discountObj;
+                }
+
                 var service = new SessionService();
-                Session stripSession =  service.Create(options);
+                Session stripSession = service.Create(options);
                 stripeRequestDTO.StripSessionUrl = stripSession.Url;
                 stripeRequestDTO.StripSessionId = stripSession.Id;
-                
+
                 OrderHeader orderHeader = _orderDbContext.OrderHeaders.First(x => x.OrderHeaderId == stripeRequestDTO.OrderHeader.OrderHeaderId);
                 orderHeader.StripSessionId = stripSession.Id;
                 _orderDbContext.SaveChanges();
-                
+
                 _responseDto.Result = stripeRequestDTO;
             }
-             catch (Exception ex)
+            catch (Exception ex)
             {
                 _responseDto.IsSuccess = false;
                 _responseDto.Message = ex.Message;

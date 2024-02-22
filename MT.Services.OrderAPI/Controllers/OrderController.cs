@@ -8,6 +8,8 @@ using MT.Services.OrderAPI.Models;
 using MT.Web.Models;
 using Stripe.Checkout;
 using Stripe;
+using Microsoft.EntityFrameworkCore;
+using MT.Services.OrderAPI.Service.Interfaces;
 
 namespace MT.Services.OrderAPI.Controllers
 {
@@ -17,12 +19,14 @@ namespace MT.Services.OrderAPI.Controllers
     public class OrderController : ControllerBase
     {
         readonly OrderDbContext _orderDbContext;
+        readonly ICartService _cartService;
         ResponseDto _responseDto;
         readonly IMapper _mapper;
-        public OrderController(OrderDbContext orderDbContext, IMapper mapper)
+        public OrderController(OrderDbContext orderDbContext, ICartService cartService, IMapper mapper)
         {
             _responseDto = new ResponseDto();
             _orderDbContext = orderDbContext;
+            _cartService = cartService;
             _mapper = mapper;
         }
 
@@ -71,7 +75,7 @@ namespace MT.Services.OrderAPI.Controllers
                     }
                 };
                 var customerService = new CustomerService();
-                var newCustomer = customerService.Create(customerCreateOptions);
+                var newCustomer = await customerService.CreateAsync(customerCreateOptions);
 
                 var options = new SessionCreateOptions
                 {
@@ -83,7 +87,7 @@ namespace MT.Services.OrderAPI.Controllers
                     BillingAddressCollection = "required",
                     ShippingAddressCollection = new SessionShippingAddressCollectionOptions()
                     {
-                        AllowedCountries = new List<string>() { "IN", "US" }
+                        AllowedCountries = new List<string>() { "US" } // , "IN"
                     },
                     Currency = "INR"
                 };
@@ -128,11 +132,44 @@ namespace MT.Services.OrderAPI.Controllers
                 stripeRequestDTO.StripSessionUrl = stripSession.Url;
                 stripeRequestDTO.StripSessionId = stripSession.Id;
 
-                OrderHeader orderHeader = _orderDbContext.OrderHeaders.First(x => x.OrderHeaderId == stripeRequestDTO.OrderHeader.OrderHeaderId);
+                OrderHeader orderHeader = await _orderDbContext.OrderHeaders
+                                                                .FirstAsync(x => x.OrderHeaderId == stripeRequestDTO.OrderHeader.OrderHeaderId);
                 orderHeader.StripSessionId = stripSession.Id;
-                _orderDbContext.SaveChanges();
+                await _orderDbContext.SaveChangesAsync();
 
                 _responseDto.Result = stripeRequestDTO;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+
+            return _responseDto;
+        }
+
+        [HttpPost("validate-payment-session")]
+        public async Task<ResponseDto> ValidatePaymentSession(int orderHeaderId)
+        {
+            try
+            {
+                OrderHeader orderHeader = await _orderDbContext.OrderHeaders.FirstAsync(x => x.OrderHeaderId == orderHeaderId);
+
+                var service = new SessionService();
+                Session stripSession = service.Get(orderHeader.StripSessionId);
+
+                var paymentService = new PaymentIntentService();
+                PaymentIntent paymentIntent = paymentService.Get(stripSession.PaymentIntentId);
+
+                if (paymentIntent.Status == "succeeded")
+                {
+                    orderHeader.PaymentIntentId = paymentIntent.Id;
+                    orderHeader.Status = SD.OrderStatus.Approved.ToString();
+                    await _orderDbContext.SaveChangesAsync();
+
+                    await _cartService.RemoveAllAsync(orderHeader?.UserId);
+                    _responseDto.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
+                }
             }
             catch (Exception ex)
             {

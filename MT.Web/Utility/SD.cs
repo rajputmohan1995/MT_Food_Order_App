@@ -33,4 +33,14 @@ public class SD
                     .Select(v => v.ToString())
                     .ToList();
     }
+
+    public enum OrderStatus
+    {
+        Pending,
+        Approved,
+        ReadForPickup,
+        Completed,
+        Refunded,
+        Canceled
+    }
 }

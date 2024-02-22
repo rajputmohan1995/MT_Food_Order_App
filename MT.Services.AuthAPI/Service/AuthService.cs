@@ -37,7 +37,17 @@ public class AuthService : IAuthService
             Email = registration.Email,
             PhoneNumber = registration.PhoneNumber,
             Name = registration.Name,
-            NormalizedEmail = registration.Email.ToUpper()
+            NormalizedEmail = registration.Email.ToUpper(),
+            BillingAddress = string.Empty,
+            BillingCity = string.Empty,
+            BillingState = string.Empty,
+            BillingCountry = string.Empty,
+            BillingZipCode = string.Empty,
+            ShippingAddress = string.Empty,
+            ShippingCity = string.Empty,
+            ShippingState= string.Empty,
+            ShippingCountry = string.Empty,
+            ShippingZipCode = string.Empty,
         };
 
         try

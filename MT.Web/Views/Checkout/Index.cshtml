@@ -91,6 +91,16 @@
 
                 <h3>Billing Details</h3>
                 <hr />
+
+                @if (TempData["ShoppingCartValidationErrors"] != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12 text-danger">
+                            @(Html.Raw(TempData["ShoppingCartValidationErrors"]))
+                        </div>
+                    </div>
+                }
+
                 <div class="form-item w-100">
                     <label class="form-label my-3">Full Name<sup>*</sup></label>
                     <input type="text" class="form-control" asp-for="User.Name" placeholder="Enter Full Name" />

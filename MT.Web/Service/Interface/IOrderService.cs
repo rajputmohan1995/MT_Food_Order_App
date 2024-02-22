@@ -6,4 +6,5 @@ public interface IOrderService
 {
     Task<ResponseDto?> CreateOrderAsync(ShoppingCartDTO shoppingCartDTO);
     Task<ResponseDto?> CreatePaymentSessionAsync(StripeRequestDTO stripeRequestDTO);
+    Task<ResponseDto?> ValidatePaymentSessionAsync(int orderHeaderId);
 }

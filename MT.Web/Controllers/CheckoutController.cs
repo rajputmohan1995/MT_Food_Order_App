@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MT.Web.Models;
 using MT.Web.Models.DTO;
 using MT.Web.Service.Interface;
+using MT.Web.Utility;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -44,6 +45,14 @@ public class CheckoutController : BaseController
     {
         try
         {
+            var validationResponse = ValidateShoppingCart(cartDto);
+            if (!validationResponse.Item1)
+            {
+                TempData["error"] = "Required details are not supplied";
+                TempData["ShoppingCartValidationErrors"] = validationResponse.Item2;
+                return RedirectToAction("Index");
+            }
+
             ShoppingCartDTO cartToSend = null;
             var userCartDetails = await _cartService.GetCartByUserIdAsync(GetLoggedInUserId());
             if (userCartDetails != null && userCartDetails.IsSuccess)
@@ -80,7 +89,7 @@ public class CheckoutController : BaseController
 
                     var stripReqDto = new StripeRequestDTO()
                     {
-                        OrderHeader = orderHeaderDto, 
+                        OrderHeader = orderHeaderDto,
                         UserDetails = cartToSend.User,
                         ApprovedUrl = domain + $"checkout/confirmation?orderId={orderHeaderDto.OrderHeaderId}&orderConfirmationId={Guid.NewGuid().ToString()}",
                         CancelUrl = domain + "checkout/index"
@@ -107,9 +116,79 @@ public class CheckoutController : BaseController
     }
 
 
-    public async Task<IActionResult> Confirmation(int orderId, string orderConfirmationId)
+    [NonAction]
+    private Tuple<bool, string> ValidateShoppingCart(ShoppingCartDTO cartDto)
     {
-        return View(orderId);
+        var errorList = "<ul>";
+        var isSuccess = true;
+        if (cartDto == null || cartDto?.User == null)
+        {
+            isSuccess = false;
+            errorList += "<li>Required details not supplied</li>";
+        }
+
+        if (string.IsNullOrWhiteSpace(cartDto?.User?.Name))
+        {
+            isSuccess = false;
+            errorList += "<li>Name is required</li>";
+        }
+
+        if (string.IsNullOrWhiteSpace(cartDto?.User?.PhoneNumber))
+        {
+            isSuccess = false;
+            errorList += "<li>Phone is required</li>";
+        }
+
+        if (string.IsNullOrWhiteSpace(cartDto?.User?.Email))
+        {
+            isSuccess = false;
+            errorList += "<li>Email is required</li>";
+        }
+
+        if (string.IsNullOrWhiteSpace(cartDto?.User?.BillingAddress) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.BillingCity) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.BillingState) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.BillingCountry) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.BillingZipCode))
+        {
+            isSuccess = false;
+            errorList += "<li>Complete billing address is required</li>";
+        }
+
+        if (string.IsNullOrWhiteSpace(cartDto?.User?.ShippingAddress) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.ShippingCity) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.ShippingState) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.ShippingCountry) ||
+            string.IsNullOrWhiteSpace(cartDto?.User?.ShippingZipCode))
+        {
+            isSuccess = false;
+            errorList += "<li>Complete shipping address is required</li>";
+        }
+
+        errorList += "</ul>";
+        return new Tuple<bool, string>(isSuccess, errorList);
     }
 
+
+    public async Task<IActionResult> Confirmation(int orderId, string orderConfirmationId)
+    {
+        var orderWithPaymentDetails = await _orderService.ValidatePaymentSessionAsync(orderId);
+
+        if (orderWithPaymentDetails == null || !orderWithPaymentDetails.IsSuccess)
+        {
+            TempData["error"] = "Payment unsuccessful";
+            return RedirectToAction("Index");
+        }
+
+        var objOrderHeaderWithPaymentDetail = JsonConvert.DeserializeObject<OrderHeaderDTO>(orderWithPaymentDetails.Result.ToString());
+
+        if (objOrderHeaderWithPaymentDetail?.Status == SD.OrderStatus.Approved.ToString())
+        {
+            TempData["success"] = "Payment approved";
+            return View(orderId);
+        }
+
+        TempData["error"] = "Payment failed";
+        return RedirectToAction("Index");
+    }
 }

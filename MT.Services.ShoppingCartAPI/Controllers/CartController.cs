@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MT.MessageBus;
@@ -11,6 +12,7 @@ namespace MT.Services.ShoppingCartAPI.Controllers;
 
 [Route("api/cart")]
 [ApiController]
+[Authorize]
 public class CartController : ControllerBase
 {
     private readonly ShoppingCartDbContext _cartDbContext;
@@ -126,6 +128,30 @@ public class CartController : ControllerBase
         {
             _responseDto.Message = ex.Message;
             _responseDto.IsSuccess = false;
+        }
+        return _responseDto;
+    }
+
+    [HttpPost]
+    [Route("remove-all-items")]
+    public async Task<ResponseDto> RemoveAllItems(string userId)
+    {
+        try
+        {
+            var removeCartHeader = _cartDbContext.CartHeaders.First(c => c.UserId == userId);
+            var removeCartDetails = _cartDbContext.CartDetails.Where(c => c.CartHeaderId == removeCartHeader.CartHeaderId);
+
+            _cartDbContext.CartDetails.RemoveRange(removeCartDetails);
+            _cartDbContext.CartHeaders.Remove(removeCartHeader);
+
+            await _cartDbContext.SaveChangesAsync();
+            _responseDto.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _responseDto.Message = ex.Message;
+            _responseDto.IsSuccess = false;
+            _responseDto.Result = false;
         }
         return _responseDto;
     }

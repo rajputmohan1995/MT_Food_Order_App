@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MT.Services.OrderAPI.DBContext;
 using MT.Services.OrderAPI.Extensions;
+using MT.Services.OrderAPI.Service;
+using MT.Services.OrderAPI.Service.Interfaces;
 using MT.Services.OrderAPI.Utility;
 using Stripe;
 
@@ -24,6 +26,11 @@ builder.Services.AddScoped<ApiAuthenticationHttpClientHandler>();
 
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
+
+builder.Services.AddHttpClient("ShoppingCart", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ShoppingCartAPI"]))
+    .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
+
+builder.Services.AddScoped<ICartService, CartService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

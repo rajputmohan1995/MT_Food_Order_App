@@ -31,4 +31,13 @@ public class OrderService : IOrderService
             Data = stripeRequestDTO
         });
     }
+
+    public async Task<ResponseDto?> ValidatePaymentSessionAsync(int orderHeaderId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.OrderAPIBase}/api/order/validate-payment-session?orderHeaderId={orderHeaderId}",
+            ApiType = SD.ApiType.POST,
+        });
+    }
 }

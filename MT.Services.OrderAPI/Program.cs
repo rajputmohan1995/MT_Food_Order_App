@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MT.MessageBus;
 using MT.Services.OrderAPI.DBContext;
 using MT.Services.OrderAPI.Extensions;
 using MT.Services.OrderAPI.Service;
@@ -30,6 +31,7 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.C
 builder.Services.AddHttpClient("ShoppingCart", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ShoppingCartAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
 
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddScoped<ICartService, CartService>();
 
 builder.Services.AddControllers();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MT.Services.EmailAPI.DBContext;
+using MT.Services.EmailAPI.Message;
 using MT.Services.EmailAPI.Models;
 using MT.Services.EmailAPI.Service.Interfaces;
 using MT.Services.EmailAPI.Services.Interfaces;
@@ -94,7 +95,7 @@ public class EmailService : IEmailService
         await LogAndEmail(registerUserEmailContent, _configuration.GetValue<string>("AdminDetails:Email"));
     }
 
-    public async Task<bool> LogAndEmail(string invoiceEmailContent, string emailAddress)
+    public async Task<bool> LogAndEmail(string messageContent, string emailAddress)
     {
         try
         {
@@ -102,7 +103,7 @@ public class EmailService : IEmailService
             {
                 Email = emailAddress,
                 EmailSent = DateTime.UtcNow,
-                Message = invoiceEmailContent,
+                Message = messageContent,
             };
 
             await using var _db = new EmailDbContext(_dbOptions);
@@ -116,4 +117,9 @@ public class EmailService : IEmailService
         }
     }
 
+    public async Task NewOrderEmailAsync(RewardMessage rewardMessage)
+    {
+        string newOrderMessage = $"New order placed. <br /> Order ID:{rewardMessage.OrderId}";
+        await LogAndEmail(newOrderMessage, "admin@domain.com");
+    }
 }

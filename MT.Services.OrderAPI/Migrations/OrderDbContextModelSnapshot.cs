@@ -50,7 +50,7 @@ namespace MT.Services.OrderAPI.Migrations
 
                     b.HasIndex("OrderHeaderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("MT.Services.OrderAPI.Models.OrderHeader", b =>
@@ -90,7 +90,7 @@ namespace MT.Services.OrderAPI.Migrations
 
                     b.HasKey("OrderHeaderId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("MT.Services.OrderAPI.Models.OrderDetail", b =>

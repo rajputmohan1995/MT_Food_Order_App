@@ -10,6 +10,8 @@ using Stripe.Checkout;
 using Stripe;
 using Microsoft.EntityFrameworkCore;
 using MT.Services.OrderAPI.Service.Interfaces;
+using MT.MessageBus;
+using Newtonsoft.Json;
 
 namespace MT.Services.OrderAPI.Controllers
 {
@@ -22,12 +24,17 @@ namespace MT.Services.OrderAPI.Controllers
         readonly ICartService _cartService;
         ResponseDto _responseDto;
         readonly IMapper _mapper;
-        public OrderController(OrderDbContext orderDbContext, ICartService cartService, IMapper mapper)
+        readonly IMessageBus _messageBus;
+        IConfiguration _configuration;
+        public OrderController(OrderDbContext orderDbContext, ICartService cartService, IMapper mapper, 
+            IMessageBus messageBus, IConfiguration configuration)
         {
             _responseDto = new ResponseDto();
             _orderDbContext = orderDbContext;
             _cartService = cartService;
             _mapper = mapper;
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
 
         [HttpPost("create-order")]
@@ -167,7 +174,18 @@ namespace MT.Services.OrderAPI.Controllers
                     orderHeader.Status = SD.OrderStatus.Approved.ToString();
                     await _orderDbContext.SaveChangesAsync();
 
-                    await _cartService.RemoveAllAsync(orderHeader?.UserId);
+                    await _cartService.RemoveAllAsync(orderHeader?.UserId!);
+
+                    RewardsDTO rewardsDTO = new RewardsDTO
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+                        UserId = orderHeader.UserId
+                    };
+
+                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:NewOrderGeneratedTopic");
+                    await _messageBus.PublishMessage(rewardsDTO, topicName);
+
                     _responseDto.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                 }
             }

@@ -40,4 +40,32 @@ public class OrderService : IOrderService
             ApiType = SD.ApiType.POST,
         });
     }
+
+    public async Task<ResponseDto?> GetAllOrdersAsync(string userId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.OrderAPIBase}/api/order/get-orders/{userId}",
+            ApiType = SD.ApiType.GET
+        });
+    }
+
+    public async Task<ResponseDto?> GetOrderByIdAsync(int orderId, string userId)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.OrderAPIBase}/api/order/get-order/{orderId}/{userId}",
+            ApiType = SD.ApiType.GET
+        });
+    }
+
+    public async Task<ResponseDto?> UpdateOrderStatusAsync(int orderId, string userId, SD.OrderStatus orderStatus)
+    {
+        return await _baseService.SendAsync(new RequestDto()
+        {
+            Url = $"{SD.OrderAPIBase}/api/order/update-order-status/{orderId}/{userId}",
+            ApiType = SD.ApiType.POST,
+            Data = orderStatus.ToString()
+        });
+    }
 }

@@ -4,6 +4,7 @@ using MT.Services.OrderAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MT.Services.OrderAPI.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240225072340_add-user-name-in-orderHeader")]
+    partial class addusernameinorderHeader
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,6 +67,9 @@ namespace MT.Services.OrderAPI.Migrations
                     b.Property<string>("CouponCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
@@ -85,13 +91,7 @@ namespace MT.Services.OrderAPI.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserFullName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserPhone")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderHeaderId");

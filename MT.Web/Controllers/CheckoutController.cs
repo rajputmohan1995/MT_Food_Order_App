@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MT.Web.Models;
-using MT.Web.Models.DTO;
 using MT.Web.Service.Interface;
 using MT.Web.Utility;
 using Newtonsoft.Json;
@@ -65,6 +64,8 @@ public class CheckoutController : BaseController
             else
             {
                 cartToSend.CartHeader.UserEmail = GetLoggedInEmailId();
+                cartToSend.CartHeader.UserFullName = cartDto.User.Name;
+                cartToSend.CartHeader.UserPhone = cartDto.User.PhoneNumber;
                 cartToSend.User = new();
                 cartToSend.User.Name = cartDto.User.Name;
                 cartToSend.User.PhoneNumber = cartDto.User.PhoneNumber;

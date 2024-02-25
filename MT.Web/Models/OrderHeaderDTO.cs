@@ -1,4 +1,4 @@
-﻿namespace MT.Web.Models.DTO;
+﻿namespace MT.Web.Models;
 
 public class OrderHeaderDTO
 {
@@ -8,6 +8,8 @@ public class OrderHeaderDTO
     public double Discount { get; set; }
     public double OrderTotal { get; set; }
     public string? UserEmail { get; set; }
+    public string? UserFullName { get; set; }
+    public string? UserPhone { get; set; }
     public DateTime OrderTime { get; set; }
     public string? Status { get; set; }
     public string? PaymentIntentId { get; set; }

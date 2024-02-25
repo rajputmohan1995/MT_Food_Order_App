@@ -26,7 +26,7 @@ namespace MT.Services.OrderAPI.Controllers
         readonly IMapper _mapper;
         readonly IMessageBus _messageBus;
         IConfiguration _configuration;
-        public OrderController(OrderDbContext orderDbContext, ICartService cartService, IMapper mapper, 
+        public OrderController(OrderDbContext orderDbContext, ICartService cartService, IMapper mapper,
             IMessageBus messageBus, IConfiguration configuration)
         {
             _responseDto = new ResponseDto();
@@ -188,6 +188,114 @@ namespace MT.Services.OrderAPI.Controllers
 
                     _responseDto.Result = _mapper.Map<OrderHeaderDTO>(orderHeader);
                 }
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+
+            return _responseDto;
+        }
+
+
+        [HttpGet("get-orders/{userId}")]
+        public async Task<ResponseDto> GetAllOrders(string userId = "")
+        {
+            try
+            {
+                IEnumerable<OrderHeader> allOrders;
+                if (User.IsInRole(SD.RoleAdmin.ToString()))
+                {
+                    allOrders = await _orderDbContext.OrderHeaders
+                                                    .Include(x => x.OrderDetails)
+                                                    .OrderByDescending(o => o.OrderHeaderId)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+                }
+                else
+                {
+                    allOrders = await _orderDbContext.OrderHeaders
+                                                    .Include(x => x.OrderDetails)
+                                                    .Where(x => x.UserId == userId)
+                                                    .OrderByDescending(o => o.OrderHeaderId)
+                                                    .AsNoTracking()
+                                                    .ToListAsync();
+                }
+
+                _responseDto.Result = _mapper.Map<IEnumerable<OrderHeaderDTO>>(allOrders);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+
+            return _responseDto;
+        }
+
+        [HttpGet("get-order/{orderId:int}/{userId}")]
+        public async Task<ResponseDto> GetOrder(int orderId, string userId = "")
+        {
+            try
+            {
+                OrderHeader? orderResult;
+                if (User.IsInRole(SD.RoleAdmin.ToString()))
+                {
+                    orderResult = await _orderDbContext.OrderHeaders
+                                                    .Include(x => x.OrderDetails)
+                                                    .FirstOrDefaultAsync(x => x.OrderHeaderId == orderId);
+                }
+                else
+                {
+                    orderResult = await _orderDbContext.OrderHeaders
+                                                    .Include(x => x.OrderDetails)
+                                                    .FirstOrDefaultAsync(x => x.OrderHeaderId == orderId && x.UserId == userId);
+                }
+
+                _responseDto.Result = _mapper.Map<OrderHeaderDTO>(orderResult);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+
+            return _responseDto;
+        }
+
+        [HttpPost("update-order-status/{orderId:int}/{userId}")]
+        public async Task<ResponseDto> UpdateOrderStatus(int orderId, [FromBody] string orderStatus, string userId = "")
+        {
+            try
+            {
+                OrderHeader? orderFromDb;
+                if (User.IsInRole(SD.RoleAdmin.ToString()))
+                    orderFromDb = await _orderDbContext.OrderHeaders.FirstOrDefaultAsync(x => x.OrderHeaderId == orderId);
+                else orderFromDb = await _orderDbContext.OrderHeaders.FirstOrDefaultAsync(x => x.OrderHeaderId == orderId && x.UserId == userId);
+
+                if (orderFromDb == null)
+                {
+                    _responseDto.Message = "Order not found";
+                    _responseDto.IsSuccess = false;
+                    return _responseDto;
+                }
+
+                orderFromDb.Status = Enum.Parse(typeof(SD.OrderStatus), orderStatus).ToString();
+
+                if (orderFromDb.Status == SD.OrderStatus.Canceled.ToString())
+                {
+                    var options = new RefundCreateOptions()
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderFromDb.PaymentIntentId,
+                    };
+
+                    var service = new RefundService();
+                    Refund refundObj = await service.CreateAsync(options);
+                }
+
+                await _orderDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {

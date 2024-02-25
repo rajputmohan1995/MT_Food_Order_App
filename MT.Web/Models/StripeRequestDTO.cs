@@ -1,6 +1,4 @@
-﻿using MT.Web.Models.DTO;
-
-namespace MT.Web.Models;
+﻿namespace MT.Web.Models;
 
 public class StripeRequestDTO
 {

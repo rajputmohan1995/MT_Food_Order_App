@@ -1,4 +1,4 @@
-﻿namespace MT.Web.Models.DTO;
+﻿namespace MT.Web.Models;
 
 public class OrderDetailDTO
 {

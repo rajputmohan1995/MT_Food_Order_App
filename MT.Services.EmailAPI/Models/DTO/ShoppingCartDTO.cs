@@ -16,6 +16,7 @@ public class CartHeaderDTO
     public double Discount { get; set; }
     public double CartTotal { get; set; }
     public string? UserEmail { get; set; }
+    public string? UserFullName { get; set; }
 }
 
 public class CartDetailDTO

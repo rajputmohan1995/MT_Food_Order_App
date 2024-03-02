@@ -41,11 +41,11 @@ public class OrderService : IOrderService
         });
     }
 
-    public async Task<ResponseDto?> GetAllOrdersAsync(string userId)
+    public async Task<ResponseDto?> GetAllOrdersAsync(string userId, string orderStatus)
     {
         return await _baseService.SendAsync(new RequestDto()
         {
-            Url = $"{SD.OrderAPIBase}/api/order/get-orders/{userId}",
+            Url = $"{SD.OrderAPIBase}/api/order/get-orders/{userId}?orderStatus={orderStatus}",
             ApiType = SD.ApiType.GET
         });
     }

@@ -6,6 +6,7 @@ using MT.Web.Service.Interface;
 using MT.Web.Utility;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 
 namespace MT.Web.Controllers;
@@ -90,8 +91,7 @@ public class AuthController : Controller
             jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name)?.Value ?? userData.Name));
         identity.AddClaim(new Claim(ClaimTypes.Name,
             jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email)?.Value ?? userData.Email));
-        identity.AddClaim(new Claim(ClaimTypes.Role,
-            jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value ?? SD.RoleCustomer));
+        identity.AddClaims(jwt.Claims.Where(u => u.Type == "role").Select(role => new Claim(ClaimTypes.Role, role?.Value ?? SD.RoleCustomer)));
 
         var principal = new ClaimsPrincipal(identity);
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);

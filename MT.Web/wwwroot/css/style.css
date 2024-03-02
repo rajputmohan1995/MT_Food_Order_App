@@ -475,7 +475,8 @@ a {
         }
 
         .pagination a:hover:not(.active) {
-            background-color: var(--bs-primary)
+            background-color: var(--bs-primary);
+            color: var(--bs-white);
         }
 
 .nav.nav-tabs .nav-link.active {

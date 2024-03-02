@@ -1,74 +1,120 @@
-﻿@model List<OrderHeaderDTO>
+﻿@using MT.Web.Utility
+@model List<OrderHeaderDTO>
 @{
     var pageTitle = "All Orders";
     ViewData["Title"] = pageTitle;
     var pageHeader = new PageDefaultHeader(pageTitle);
     pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Home", PageName = "Home" });
     pageHeader.PageLinks.Add(new() { Action = "Index", Controller = "Order", PageName = pageTitle, IsCurrentPage = true });
+
+    var showAllOrder = "";
+    if (TempData["FilterOrderStatus"] == null || string.IsNullOrWhiteSpace(TempData["FilterOrderStatus"].ToString()))
+        showAllOrder = "active";
 }
 
 <partial name="_PageHeader" model="@pageHeader" />
 
 
-@if (Model == null || Model.Count == 0)
-{
-    <div class="container py-5">
-        <div class="row g-4 text-center">
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                <div class="bg-light rounded border">
+@*@if (Model == null || Model.Count == 0)
+  {
+      <div class="container py-5">
+          <div class="row g-4 text-center">
+              <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                  <div class="bg-light rounded border">
 
-                    <div class="py-4 mb-4 border-top border-bottom justify-content-between">
-                        <h5 class="mb-0 ps-4 me-4">No Orders Found!</h5>
-                    </div>
-                    <a class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
-                       asp-action="Index" asp-controller="Home">
-                        Explore Menu
-                    </a>
+                      <div class="py-4 mb-4 border-top border-bottom justify-content-between">
+                          <h5 class="mb-0 ps-4 me-4">No Orders Found!</h5>
+                      </div>
+                      <a class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                         asp-action="Index" asp-controller="Home">
+                          Explore Menu
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  }
+  else
+  {
+  }*@
+
+<form method="post">
+    <div class="container py-5">
+        <div class="row">
+
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-4">
+                <label>Filter: </label>
+                <div class="pagination">
+                    <a asp-action="Index" class="rounded @showAllOrder">All</a>
+                    @foreach (var orderStatus in Enum.GetNames(typeof(SD.OrderStatus)).ToList())
+                    {
+                        <a asp-action="Index" asp-route-orderStatus="@orderStatus"
+                           class="rounded @(TempData["FilterOrderStatus"] != null && TempData["FilterOrderStatus"]?.ToString() == orderStatus ? "active" : "")">
+                            @StringExtensions.ToHumanize(orderStatus)
+                        </a>
+                    }
+                </div>
+
+            </div>
+
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center">
+                        <thead class="text-dark bg-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Products</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @if (Model != null && Model.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="7">
+                                        No records found!
+                                    </td>
+                                </tr>
+                            }
+
+                            @for (var index = 0; index < Model.Count; index++)
+                            {
+                                var orderHeader = Model[index];
+
+                                var orderStatusBg = "bg-secondary";
+
+                                if (orderHeader?.Status == SD.OrderStatus.Approved.ToString() || orderHeader?.Status == SD.OrderStatus.Completed.ToString())
+                                    orderStatusBg = "bg-success";
+                                else if (orderHeader?.Status == SD.OrderStatus.Pending.ToString() || orderHeader?.Status == SD.OrderStatus.ReadyForPickup.ToString())
+                                    orderStatusBg = "bg-info";
+                                else if (orderHeader?.Status == SD.OrderStatus.Canceled.ToString())
+                                    orderStatusBg = "bg-dark";
+                                else if (orderHeader?.Status == SD.OrderStatus.Refunded.ToString())
+                                    orderStatusBg = "bg-warning";
+
+                                <tr>
+                                    <td>@orderHeader.OrderHeaderId</td>
+                                    <td>@($"{orderHeader.UserFullName} ({orderHeader.UserEmail})")</td>
+                                    <td>@orderHeader.UserPhone</td>
+                                    <td>@orderHeader.OrderTime.ToLongDateString() @orderHeader.OrderTime.ToLongTimeString()</td>
+                                    <td>
+                                        <span class="px-3 py-1 mx-2 rounded text-white @orderStatusBg text-uppercase fw-bold">
+                                            @MT.Web.Utility.StringExtensions.ToHumanize(orderHeader.Status)
+                                        </span>
+                                    </td>
+                                    <td>@orderHeader.OrderTotal.ToString("c")</td>
+                                    <td><a asp-controller="Order" asp-action="Detail" asp-route-orderId="@orderHeader.OrderHeaderId">Edit</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-}
-else
-{
-    <form method="post">
-        <div class="container py-5">
-            <div class="row">
-
-                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover text-center">
-                            <thead class="text-dark bg-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Customer</th>
-                                    <th>Phone</th>
-                                    <th>Products</th>
-                                    <th>Status</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @for (var index = 0; index < Model.Count; index++)
-                                {
-                                    var orderHeader = Model[index];
-                                    <tr>
-                                        <td>@orderHeader.OrderHeaderId</td>
-                                        <td>@($"{orderHeader.UserFullName} ({orderHeader.UserEmail})")</td>
-                                        <td>@orderHeader.UserPhone</td>
-                                        <td>@orderHeader.OrderTime.ToLongDateString() @orderHeader.OrderTime.ToLongTimeString()</td>
-                                        <td>@orderHeader.Status</td>
-                                        <td>@orderHeader.OrderTotal.ToString("c")</td>
-                                        <td><a asp-controller="Order" asp-action="Edit">Edit</a></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-}
+</form>

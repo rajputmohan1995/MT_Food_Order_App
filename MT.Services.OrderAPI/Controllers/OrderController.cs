@@ -200,7 +200,7 @@ namespace MT.Services.OrderAPI.Controllers
 
 
         [HttpGet("get-orders/{userId}")]
-        public async Task<ResponseDto> GetAllOrders(string userId = "")
+        public async Task<ResponseDto> GetAllOrders(string userId = "", string? orderStatus = null)
         {
             try
             {
@@ -209,6 +209,7 @@ namespace MT.Services.OrderAPI.Controllers
                 {
                     allOrders = await _orderDbContext.OrderHeaders
                                                     .Include(x => x.OrderDetails)
+                                                    .Where(x => !string.IsNullOrWhiteSpace(orderStatus) ? x.Status == orderStatus.ToString() : true)
                                                     .OrderByDescending(o => o.OrderHeaderId)
                                                     .AsNoTracking()
                                                     .ToListAsync();
@@ -217,7 +218,8 @@ namespace MT.Services.OrderAPI.Controllers
                 {
                     allOrders = await _orderDbContext.OrderHeaders
                                                     .Include(x => x.OrderDetails)
-                                                    .Where(x => x.UserId == userId)
+                                                    .Where(x => x.UserId == userId && 
+                                                                !string.IsNullOrWhiteSpace(orderStatus) ? x.Status == orderStatus.ToString() : true)
                                                     .OrderByDescending(o => o.OrderHeaderId)
                                                     .AsNoTracking()
                                                     .ToListAsync();
@@ -281,9 +283,9 @@ namespace MT.Services.OrderAPI.Controllers
                     return _responseDto;
                 }
 
-                orderFromDb.Status = Enum.Parse(typeof(SD.OrderStatus), orderStatus).ToString();
 
-                if (orderFromDb.Status == SD.OrderStatus.Canceled.ToString())
+                if ((orderFromDb.Status == SD.OrderStatus.Approved.ToString() || orderFromDb.Status == SD.OrderStatus.ReadyForPickup.ToString())
+                    && orderStatus == SD.OrderStatus.Canceled.ToString())
                 {
                     var options = new RefundCreateOptions()
                     {
@@ -294,6 +296,8 @@ namespace MT.Services.OrderAPI.Controllers
                     var service = new RefundService();
                     Refund refundObj = await service.CreateAsync(options);
                 }
+
+                orderFromDb.Status = Enum.Parse(typeof(SD.OrderStatus), orderStatus).ToString();
 
                 await _orderDbContext.SaveChangesAsync();
             }

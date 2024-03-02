@@ -6,7 +6,7 @@ public class SD
     {
         Pending,
         Approved,
-        ReadForPickup,
+        ReadyForPickup,
         Completed,
         Refunded,
         Canceled

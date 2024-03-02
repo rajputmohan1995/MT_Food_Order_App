@@ -21,7 +21,7 @@
             </h1>
             <h4>Order Id: #@Model</h4>
             <p class="mb-4">Sit back & relax, your order and will be ready in 30 minutes (approx) during regular business hours!</p>
-            <a class="btn border-secondary rounded-pill py-3 px-5" href="index.html">Show Details</a>
+            <a class="btn border-secondary rounded-pill py-3 px-5" asp-route-orderId="@Model" asp-action="Detail" asp-controller="Order">Show Details</a>
         </div>
     </div>
 </div>

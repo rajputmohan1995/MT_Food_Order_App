@@ -1,4 +1,6 @@
-﻿namespace MT.Web.Utility;
+﻿using System.ComponentModel;
+
+namespace MT.Web.Utility;
 
 public class SD
 {
@@ -38,9 +40,11 @@ public class SD
     {
         Pending,
         Approved,
-        ReadForPickup,
+        [Description("Ready For Pickup")]
+        ReadyForPickup,
         Completed,
         Refunded,
+        [Description("Cancelled")]
         Canceled
     }
 }

@@ -23,7 +23,11 @@ public class BaseService : IBaseService
         {
             HttpClient client = _httpClientFactory.CreateClient("MT_API");
             HttpRequestMessage message = new();
-            message.Headers.Add("Accept", SD.JsonType);
+
+            if (request.ContentType == SD.ContentType.MultipartFormData)
+                message.Headers.Add("Accept", "*/*");
+            else message.Headers.Add("Accept", SD.JsonType);
+
             // token
             if (withBearer)
             {
@@ -31,9 +35,26 @@ public class BaseService : IBaseService
                 message.Headers.Add("Authorization", $"Bearer {token}");
             }
 
-            message.RequestUri = new Uri(request.Url);
-            if (request.Data != null)
+            if (request.ContentType == SD.ContentType.MultipartFormData)
+            {
+                var content = new MultipartFormDataContent();
+                foreach (var prop in request.Data.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(request.Data);
+                    if (value != null && value is FormFile)
+                    {
+                        var file = (FormFile)value;
+                        if (file != null)
+                            content.Add(new StreamContent(file.OpenReadStream()), file.Name, file.FileName);
+                    }
+                    else content.Add(new StringContent(!string.IsNullOrWhiteSpace(value?.ToString()) ? value.ToString() : string.Empty), prop.Name);
+                }
+                message.Content = content;
+            }
+            else if (request.Data != null)
                 message.Content = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, SD.JsonType);
+
+            message.RequestUri = new Uri(request.Url);
 
             switch (request.ApiType)
             {

@@ -48,7 +48,7 @@ public class ProductController : BaseController
                     TempData["success"] = "Product created successfully";
                     return RedirectToAction(nameof(Index));
                 }
-                else TempData["error"] = responseProduct.Message;
+                else TempData["error"] = !string.IsNullOrWhiteSpace(responseProduct.Message) ? responseProduct.Message : "Internal error occured while adding new product";
             }
             else TempData["error"] = "Internal error occured while adding new product";
         }

@@ -47,4 +47,10 @@ public class SD
         [Description("Cancelled")]
         Canceled
     }
+
+    public enum ContentType
+    {
+        Json,
+        MultipartFormData
+    }
 }

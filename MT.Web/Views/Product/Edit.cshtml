@@ -13,17 +13,16 @@
 <!-- Content Start -->
 <div class="container-fluid py-5">
     <div class="container">
-        <div class="p-5 bg-light rounded">
-            <div class="row g-4">
+        <form asp-action="Edit" asp-controller="Product" enctype="multipart/form-data">
+            <input asp-for="ProductId" type="hidden" />
+            @Html.AntiForgeryToken()
 
-                <div class="col-lg-3"></div>
+            <div class="p-5 bg-light rounded">
+                <div class="row g-4">
 
-                <div class="col-lg-6">
-                    <form asp-action="Edit" asp-controller="Product">
-                        @Html.AntiForgeryToken()
+                    <div class="col-lg-3"></div>
 
-                        <input asp-for="ProductId" type="hidden" />
-
+                    <div class="col-lg-6">
                         <div class="mb-4">
                             <label class="mb-2">Product Name <span class="text-danger">*</span></label>
 
@@ -51,19 +50,27 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="mb-2">Image Url </label>
+                            <label class="mb-2">Image</label>
 
-                            <input type="text" asp-for="ImageUrl" class="w-100 form-control border-0 py-3" placeholder="Enter Product Image Url" />
+                            <input asp-for="Image" class="w-100 form-control border-0 py-3" />
+                            <input asp-for="ImageUrl" hidden />
+                            <input asp-for="ImageLocalPathUrl" hidden />
+                            <span asp-validation-for="Image" class="text-danger"></span>
+
+                            <br />
+                            <img src="@Model.ImageUrl" class="img-fluid me-5"
+                                 style="height:150px; margin:auto" alt="image not found!" />
                         </div>
 
                         <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary" type="submit">Submit</button>
-                    </form>
+
+                    </div>
+
+                    <div class="col-lg-3"></div>
+
                 </div>
-
-                <div class="col-lg-3"></div>
-
             </div>
-        </div>
+        </form>
     </div>
 </div>
 

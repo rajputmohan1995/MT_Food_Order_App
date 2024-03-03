@@ -19,7 +19,7 @@
                 <div class="col-lg-3"></div>
 
                 <div class="col-lg-6">
-                    <form asp-action="Create" asp-controller="Product">
+                    <form asp-action="Create" asp-controller="Product" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
 
                         <div class="mb-4">
@@ -49,9 +49,11 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="mb-2">Image Url </label>
+                            <label class="mb-2">Image </label>
+                            <input asp-for="Image" class="w-100 form-control border-0 py-3" />
+                            <input asp-for="ImageUrl" hidden class="w-100 form-control border-0 py-3" />
+                            <span asp-validation-for="Image" class="text-danger"></span>
 
-                            <input type="text" asp-for="ImageUrl" class="w-100 form-control border-0 py-3" placeholder="Enter Product Image Url" />
                         </div>
 
                         <button class="w-100 btn form-control border-secondary py-3 bg-white text-primary" type="submit">Submit</button>

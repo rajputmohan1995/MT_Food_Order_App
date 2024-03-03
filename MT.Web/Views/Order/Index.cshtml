@@ -45,11 +45,11 @@
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 mb-4">
                 <label>Filter: </label>
                 <div class="pagination">
-                    <a asp-action="Index" class="rounded @showAllOrder">All</a>
+                    <a asp-action="Index" class="m-0 @showAllOrder">All</a>
                     @foreach (var orderStatus in Enum.GetNames(typeof(SD.OrderStatus)).ToList())
                     {
                         <a asp-action="Index" asp-route-orderStatus="@orderStatus"
-                           class="rounded @(TempData["FilterOrderStatus"] != null && TempData["FilterOrderStatus"]?.ToString() == orderStatus ? "active" : "")">
+                           class="m-1 @(TempData["FilterOrderStatus"] != null && TempData["FilterOrderStatus"]?.ToString() == orderStatus ? "active" : "")">
                             @StringExtensions.ToHumanize(orderStatus)
                         </a>
                     }

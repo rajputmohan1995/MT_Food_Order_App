@@ -58,15 +58,24 @@ public class ProductController : ControllerBase
     [HttpPost]
     [Route("create")]
     [Authorize(Roles = SD.RoleAdmin)]
-    public ResponseDto Create([FromBody] ProductDTO product)
+    public async Task<ResponseDto> Create(ProductDTO productDto)
     {
         try
         {
-            var obj = _mapper.Map<Product>(product);
-            _productDbContext.Products.Add(obj);
+            var productObj = _mapper.Map<Product>(productDto);
+            _productDbContext.Products.Add(productObj);
             _productDbContext.SaveChanges();
 
-            _responseDto.Result = _mapper.Map<ProductDTO>(obj);
+            if (productDto.Image != null)
+            {
+                productObj = AddProductImageInLocalPath(productObj, productDto);
+            }
+            else productObj.ImageUrl = "https://placehold.co/600x400";
+
+            _productDbContext.Products.Update(productObj);
+            await _productDbContext.SaveChangesAsync();
+
+            _responseDto.Result = _mapper.Map<ProductDTO>(productObj);
         }
         catch (Exception ex)
         {
@@ -79,15 +88,24 @@ public class ProductController : ControllerBase
     [HttpPut]
     [Route("update")]
     [Authorize(Roles = SD.RoleAdmin)]
-    public ResponseDto Update([FromBody] ProductDTO product)
+    public async Task<ResponseDto> Update(ProductDTO productDto)
     {
         try
         {
-            var obj = _mapper.Map<Product>(product);
-            _productDbContext.Products.Update(obj);
-            _productDbContext.SaveChanges();
+            var productObj = _mapper.Map<Product>(productDto);
+            _productDbContext.Products.Update(productObj);
+            await _productDbContext.SaveChangesAsync();
 
-            _responseDto.Result = _mapper.Map<ProductDTO>(obj);
+            if (productDto.Image != null)
+            {
+                DeleteProductImage(productObj);
+                productObj = AddProductImageInLocalPath(productObj, productDto);
+            }
+
+            _productDbContext.Products.Update(productObj);
+            await _productDbContext.SaveChangesAsync();
+
+            _responseDto.Result = _mapper.Map<ProductDTO>(productObj);
         }
         catch (Exception ex)
         {
@@ -105,6 +123,8 @@ public class ProductController : ControllerBase
         try
         {
             var removeObj = _productDbContext.Products.First(p => p.ProductId == id);
+
+            DeleteProductImage(removeObj);
             _productDbContext.Products.Remove(removeObj);
             _productDbContext.SaveChanges();
         }
@@ -114,5 +134,36 @@ public class ProductController : ControllerBase
             _responseDto.Message = ex.Message;
         }
         return _responseDto;
+    }
+
+
+    [NonAction]
+    private bool DeleteProductImage(Product removeObj)
+    {
+        if (removeObj is not null && !string.IsNullOrWhiteSpace(removeObj.ImageLocalPathUrl))
+        {
+            var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), removeObj.ImageLocalPathUrl);
+            FileInfo file = new FileInfo(oldFilePathDirectory);
+            if (file.Exists) file.Delete();
+        }
+
+        return true;
+    }
+
+    [NonAction]
+    private Product AddProductImageInLocalPath(Product productObj, ProductDTO productDTO)
+    {
+        string fileName = productObj.ProductId + Path.GetExtension(productDTO?.Image?.FileName);
+        string filePath = @"wwwroot\ProductImages\" + fileName;
+
+        var filePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+        using var fileStream = new FileStream(filePathDirectory, FileMode.Create);
+        productDTO?.Image?.CopyTo(fileStream);
+
+        var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+        productObj.ImageUrl = baseUrl + "/ProductImages/" + fileName;
+        productObj.ImageLocalPathUrl = filePath;
+
+        return productObj;
     }
 }

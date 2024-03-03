@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MT.Web.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace MT.Web.Models;
 
@@ -15,5 +16,7 @@ public class ProductDTO
     public string CategoryName { get; set; }
     public string? ImageUrl { get; set; }
     public string? ImageLocalPathUrl { get; set; }
+    [MaxFileSize(1)]
+    [AllowedExtension([".jpg", ".pneg", ".png", ".jpeg"])]
     public IFormFile? Image { get; set; }
 }

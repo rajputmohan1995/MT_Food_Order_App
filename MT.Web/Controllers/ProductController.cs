@@ -52,7 +52,7 @@ public class ProductController : BaseController
             }
             else TempData["error"] = "Internal error occured while adding new product";
         }
-        return View();
+        return View(product);
     }
 
     [HttpGet]
@@ -97,7 +97,7 @@ public class ProductController : BaseController
             }
             else TempData["error"] = "Internal error occured while updating product details";
         }
-        return View();
+        return View(product);
     }
 
     public async Task<IActionResult> Delete(int id)

@@ -42,7 +42,7 @@ public class CouponService : ICouponService
     {
         return await _baseService.SendAsync(new RequestDto()
         {
-            Url = $"{SD.CouponAPIBase}/api/getbycode/{couponCode}"
+            Url = $"{SD.CouponAPIBase}/api/coupon/getbycode/{couponCode}"
         });
     }
 

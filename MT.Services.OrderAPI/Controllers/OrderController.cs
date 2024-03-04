@@ -200,7 +200,7 @@ namespace MT.Services.OrderAPI.Controllers
 
 
         [HttpGet("get-orders/{userId}")]
-        public async Task<ResponseDto> GetAllOrders(string userId = "", string? orderStatus = null)
+        public async Task<ResponseDto> GetAllOrders(string userId = "", string? orderStatus = "")
         {
             try
             {
@@ -218,8 +218,8 @@ namespace MT.Services.OrderAPI.Controllers
                 {
                     allOrders = await _orderDbContext.OrderHeaders
                                                     .Include(x => x.OrderDetails)
-                                                    .Where(x => x.UserId == userId && 
-                                                                !string.IsNullOrWhiteSpace(orderStatus) ? x.Status == orderStatus.ToString() : true)
+                                                    .Where(x => x.UserId == userId)
+                                                    .Where(x => !string.IsNullOrWhiteSpace(orderStatus) ? x.Status == orderStatus.ToString() : true)
                                                     .OrderByDescending(o => o.OrderHeaderId)
                                                     .AsNoTracking()
                                                     .ToListAsync();

@@ -136,7 +136,7 @@
                                         <p class="mb-0">Quantity: <span class="fw-bold">@orderDetail.Quantity</span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <h4 class="float-end">@((orderDetail.ProductPrice * orderDetail.Quantity).ToString("c"))</h4>
+                                        <h5 class="float-end">@((orderDetail.ProductPrice * orderDetail.Quantity).ToString("c"))</h5>
                                     </div>
                                 </div>
                                 <hr />
@@ -149,7 +149,7 @@
                                         <p>Coupon: <span class="fw-bold fst-italic">(@Model.CouponCode)</span></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <h4 class="float-end">@(Model.Discount.ToString("c"))</h4>
+                                        <h5 class="float-end">@(Model.Discount.ToString("c"))</h5>
                                     </div>
                                 </div>
                                 <hr class="mt-0" />
@@ -160,7 +160,7 @@
                                     <p>Shipping:</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <h4 class="float-end">@(20.ToString("c"))</h4>
+                                    <h5 class="float-end">@(20.ToString("c"))</h5>
                                 </div>
                             </div>
                             <hr class="mt-0" />

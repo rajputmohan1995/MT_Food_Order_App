@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MT.MessageBus;
 using MT.Services.AuthAPI.DBContext;
 using MT.Services.AuthAPI.Extensions;
 using MT.Services.AuthAPI.Models;
+using MT.Services.AuthAPI.RabbitMQSender;
+using MT.Services.AuthAPI.RabbmitMQSender;
 using MT.Services.AuthAPI.Service;
 using MT.Services.AuthAPI.Service.Interface;
 
@@ -25,7 +26,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQAuthMessageSender, RabbitMQAuthMessageSender>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

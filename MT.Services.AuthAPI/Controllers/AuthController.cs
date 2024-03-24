@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MT.MessageBus;
 using MT.Services.AuthAPI.Models.DTO;
+using MT.Services.AuthAPI.RabbmitMQSender;
 using MT.Services.AuthAPI.Service.Interface;
 
 namespace MT.Services.AuthAPI.Controllers;
@@ -12,12 +12,12 @@ public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
     private readonly IConfiguration _configuration;
-    private readonly IMessageBus _messageBus;
+    private readonly IRabbitMQAuthMessageSender _rabbitMQAuthMessageSender;
 
-    public AuthController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration)
+    public AuthController(IAuthService authService, IRabbitMQAuthMessageSender rabbitMQAuthMessageSender, IConfiguration configuration)
     {
         _authService = authService;
-        _messageBus = messageBus;
+        _rabbitMQAuthMessageSender = rabbitMQAuthMessageSender;
         _configuration = configuration;
     }
 
@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
 
         registration.Password = null;
         var topicOrQueueName = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
-        await _messageBus.PublishMessage(registration, topicOrQueueName);
+        await _rabbitMQAuthMessageSender.SendMessage(registration, topicOrQueueName);
 
         response.Message = "Registration successful";
         return Ok(response);

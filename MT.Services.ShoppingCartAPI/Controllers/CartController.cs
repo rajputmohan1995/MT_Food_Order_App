@@ -6,6 +6,7 @@ using MT.MessageBus;
 using MT.Services.CouponAPI.DBContext;
 using MT.Services.ShoppingCartAPI.Models;
 using MT.Services.ShoppingCartAPI.Models.DTO;
+using MT.Services.ShoppingCartAPI.RabbitMQSender;
 using MT.Services.ShoppingCartAPI.Service.Interfaces;
 
 namespace MT.Services.ShoppingCartAPI.Controllers;
@@ -21,12 +22,12 @@ public class CartController : ControllerBase
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
     private readonly IUserService _userService;
-    private readonly IMessageBus _messageBus;
+    private readonly IRabbitMQCartMessageSender _rabbitMQCartMessageSender;
     private readonly IConfiguration _configuration;
 
     public CartController(ShoppingCartDbContext cartDbContext, IMapper mapper,
             IProductService productService, ICouponService couponService, IUserService userService,
-            IMessageBus messageBus, IConfiguration configuration)
+            IRabbitMQCartMessageSender rabbitMQCartMessageSender, IConfiguration configuration)
     {
         _cartDbContext = cartDbContext;
         _responseDto = new ResponseDto();
@@ -34,7 +35,7 @@ public class CartController : ControllerBase
         _productService = productService;
         _couponService = couponService;
         _userService = userService;
-        _messageBus = messageBus;
+        _rabbitMQCartMessageSender = rabbitMQCartMessageSender;
         _configuration = configuration;
     }
 
@@ -273,7 +274,7 @@ public class CartController : ControllerBase
         try
         {
             var topicOrQueueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
-            await _messageBus.PublishMessage(shoppingCartDTO, topicOrQueueName);
+            await _rabbitMQCartMessageSender.SendMessage(shoppingCartDTO, topicOrQueueName);
         }
         catch (Exception ex)
         {

@@ -29,8 +29,10 @@ optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCon
 builder.Services.AddSingleton(serviceDescriptor => new EmailService(optionBuilder.Options, serviceDescriptor.GetRequiredService<IProductService>(),
     builder.Configuration, builder.Environment));
 
-
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]));
+
+builder.Services.AddHostedService<RabbitMQAuthConsumer>();
+builder.Services.AddHostedService<RabbitMQCartConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

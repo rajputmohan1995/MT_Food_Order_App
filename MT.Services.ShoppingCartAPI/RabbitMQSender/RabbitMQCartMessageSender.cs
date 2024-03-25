@@ -1,18 +1,19 @@
-﻿using MT.Services.AuthAPI.RabbmitMQSender;
+﻿
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
+using System.Threading.Channels;
 
-namespace MT.Services.AuthAPI.RabbitMQSender;
+namespace MT.Services.ShoppingCartAPI.RabbitMQSender;
 
-public class RabbitMQAuthMessageSender : IRabbitMQAuthMessageSender
+public class RabbitMQCartMessageSender : IRabbitMQCartMessageSender
 {
-    private readonly string _hostName;
-    private readonly string _username;
-    private readonly string _password;
+    private string _hostName;
+    private string _username;
+    private string _password;
     private IConnection _connection;
 
-    public RabbitMQAuthMessageSender()
+    public RabbitMQCartMessageSender()
     {
         _hostName = "localhost";
         _username = "guest";

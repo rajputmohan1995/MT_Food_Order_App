@@ -33,6 +33,7 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.C
 
 builder.Services.AddHostedService<RabbitMQAuthConsumer>();
 builder.Services.AddHostedService<RabbitMQCartConsumer>();
+builder.Services.AddHostedService<RabbitMQOrderConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

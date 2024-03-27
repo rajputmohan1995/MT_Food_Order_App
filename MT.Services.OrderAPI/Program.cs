@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 using MT.MessageBus;
 using MT.Services.OrderAPI.DBContext;
 using MT.Services.OrderAPI.Extensions;
+using MT.Services.OrderAPI.RabbitMQSender;
+using MT.Services.OrderAPI.RabbmitMQSender;
 using MT.Services.OrderAPI.Service;
 using MT.Services.OrderAPI.Service.Interfaces;
 using MT.Services.OrderAPI.Utility;
@@ -31,7 +33,7 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.C
 builder.Services.AddHttpClient("ShoppingCart", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ShoppingCartAPI"]))
     .AddHttpMessageHandler<ApiAuthenticationHttpClientHandler>();
 
-builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IRabbitMQOrderMessageSender, RabbitMQOrderMessageSender>();
 builder.Services.AddScoped<ICartService, CartService>();
 
 builder.Services.AddControllers();

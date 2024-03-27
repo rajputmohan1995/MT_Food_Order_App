@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MT.Services.EmailAPI.Extensions;
+using MT.Services.EmailAPI.Messaging;
 using MT.Services.RewardAPI.DBContext;
 using MT.Services.RewardAPI.Messaging;
 using MT.Services.RewardAPI.Messaging.Interface;
@@ -18,6 +19,8 @@ optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCon
 builder.Services.AddSingleton(serviceDescriptor => new RewardService(optionBuilder.Options, builder.Configuration, builder.Environment));
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
+
+builder.Services.AddHostedService<RabbitMQOrderConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
